@@ -58,7 +58,7 @@ jobs:
           target: "/flowerbox/portal/"
 
       - name: SSH into EC2 and restart servers
-        uses: appleboy/ssh-action@vmaster
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
