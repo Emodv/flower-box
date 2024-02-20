@@ -37,19 +37,13 @@ jobs:
           npm install
           npm run build
 
-      # Decode the private key
-      - name: Decode the EC2 private key
-        run: |
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" | base64 --decode > $HOME/ec2_private_key.pem
-          chmod 600 $HOME/ec2_private_key.pem
-
       - name: Transfer files to EC2 server
         uses: appleboy/scp-action@v0.1.2
         if: steps.nodejs_changes.outputs.modified != ''
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ runner.home }}/ec2_private_key.pem
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: "server/"
           target: "/flowerbox/server/"
 
@@ -59,7 +53,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ runner.home }}/ec2_private_key.pem
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: "portal/"
           target: "/flowerbox/portal/"
 
@@ -68,7 +62,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ runner.home }}/ec2_private_key.pem
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             pm2 restart server
             pm2 restart portal
