@@ -38,7 +38,7 @@ jobs:
           npm run build
 
       - name: Transfer files to EC2 server
-        uses: appleboy/ssh-action@vmaster
+        uses: appleboy/ssh-action@master
         if: steps.nodejs_changes.outputs.modified != ''
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -48,7 +48,7 @@ jobs:
           target: "/flowerbox/server/"
 
       - name: Transfer files to EC2 portal
-        uses: appleboy/ssh-action@vmaster
+        uses: appleboy/ssh-action@master
         if: steps.nextjs_changes.outputs.modified != ''
         with:
           host: ${{ secrets.EC2_HOST }}
