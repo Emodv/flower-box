@@ -1,0 +1,68 @@
+name: flower-box-workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check for changes in Node.js server
+        id: nodejs_changes
+        run: |
+          echo "::set-output name=modified::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^server/' || echo '')"
+      
+      - name: Check for changes in Next.js server
+        id: nextjs_changes
+        run: |
+          echo "::set-output name=modified::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^portal/' || echo '')"
+
+      - name: Install dependencies and build Node.js server
+        if: steps.nodejs_changes.outputs.modified != ''
+        run: |
+          cd server
+          npm install
+          npm run build
+
+      - name: Install dependencies and build Next.js server
+        if: steps.nextjs_changes.outputs.modified != ''
+        run: |
+          cd portal
+          npm install
+          npm run build
+
+      - name: Transfer files to EC2 server
+        uses: appleboy/scp-action@v0.1.2
+        if: steps.nodejs_changes.outputs.modified != ''
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: "server/"
+          target: "/flowerbox/server/"
+
+      - name: Transfer files to EC2 portal
+        uses: appleboy/scp-action@v0.1.2
+        if: steps.nextjs_changes.outputs.modified != ''
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: "portal/"
+          target: "/flowerbox/portal/"
+
+      - name: SSH into EC2 and restart servers
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            pm2 restart server
+            pm2 restart portal
