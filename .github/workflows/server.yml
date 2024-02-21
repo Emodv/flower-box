@@ -37,4 +37,4 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_LOCAL }}
           script: |
-            pm2 restart server
+            /home/ubuntu/.nvm/versions/node/v20.11.1/bin/pm2
