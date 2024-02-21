@@ -24,17 +24,18 @@ jobs:
       - name: Transfer files to EC2 portal
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ secrets.EC2_HOST_IP }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_LOCAL }}
           source: "portal/"
           target: "/flowerbox/portal/"
 
       - name: SSH into EC2 and restart Next.js portal
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ secrets.EC2_HOST_IP }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_LOCAL }}
           script: |
-            pm2 restart portal
+            source ~/.nvm/nvm.sh
+            /home/***/.nvm/versions/node/v20.11.1/bin/pm2 restart portal
