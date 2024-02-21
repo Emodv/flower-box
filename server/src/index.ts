@@ -1,12 +1,22 @@
-import express, { Request, Response } from 'express';
+import * as http from 'http';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const app = express();
-const port = 3000;
+import app from './app';
+import prisma from './prisma';
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, world!');
-});
+const PORT = process.env.PORT || 4000;
 
-app.listen(port, () => {
-  console.log(`Server is listening at http://localhost:${port}`);
+const httpServer: http.Server = http.createServer(app);
+
+async function startServer(): Promise<void> {
+   httpServer.listen(PORT, () => {
+    console.log('Server is listening on', PORT);
+  });
+}
+
+startServer();
+
+httpServer.on("close", async () => {
+  await prisma.$disconnect();
 });
