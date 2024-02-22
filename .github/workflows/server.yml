@@ -19,6 +19,7 @@ jobs:
         run: |
           cd server
           npm install
+          cd src
           npx prisma migrate dev
           npx prisma generate
           npm run build
