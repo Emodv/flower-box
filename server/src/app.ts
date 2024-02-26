@@ -13,10 +13,9 @@ app.use(deserializeUser);
 const corsOptions = {
   origin: process.env.CLIENT_SERVER,
   credentials: true,
-  optionsSuccessStatus: 200
-}
+  optionsSuccessStatus: 200,
+};
 
-//@ts-ignore
 app.use(cors(corsOptions));
 
 app.use(express.json());
