@@ -1,51 +1,59 @@
 import { Request, Response } from "express";
 
-import { signJWT } from "../../utils/jwt.utils";
-
 import {
   // createSession,
   createUser,
   getUser,
-  getUserById,
+  // getUserById,
   // invalidateExistingSession,
 } from "../../model/authencation/authentication.model";
-import { ResponseMessages, ResponseStatus } from "../../helpers/responseEnums";
+import { ResponseMessages, ResponseStatus } from "../../enums/responseEnums";
 import { comparePassword } from "../../helpers/helpers";
+import { Roles } from "../../enums/rolesEnum";
 
-const ACCESS_TOKEN_MAX_AGE = 3600000; // 1 hour in milliseconds
-const REFRESH_TOKEN_MAX_AGE = 3.154e10; // 1 year in milliseconds
+import { z } from "zod";
+import { signUpLoginSchema } from "../../schema/authentication";
+import { setUserCookies } from "./helper";
+
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 export async function signupHandler(request: Request, response: Response) {
   try {
-    const { email, password } = request.body;
-
-    const existingUser = await getUser(email);
-
+    const validatedData = signUpLoginSchema.parse(request.body);
+    const existingUser = await getUser(validatedData.email);
     if (existingUser) {
       return response
         .status(ResponseStatus.BadRequest)
-        .send({ message: ResponseMessages.UserAlreadyExists });
+        .send({ message: "User Already Exists" });
     }
 
     const newUser = await createUser({
-      ...request.body,
+      email: validatedData.email,
+      password: validatedData.password,
+      role: Roles.USER,
     });
 
     setUserCookies(response, newUser);
-
     return response
       .status(ResponseStatus.Created)
-      .send({ message: "Signup Success" });
-  } catch (error: any) {
-    console.log(error);
-    response.status(500).json({ message: error.message });
+      .send({ message: ResponseMessages.Success });
+  } catch (error) {
+    console.error(error);
+    if (error instanceof z.ZodError) {
+      return response
+        .status(ResponseStatus.BadGateway)
+        .json({ message: error.errors[0].message });
+    }
+    return response
+      .status(500)
+      .json({ message: "An unexpected error occurred." });
   }
 }
 
 export async function loginHandler(request: Request, response: Response) {
   try {
-    const { email, password } = request.body;
+    const validatedData = signUpLoginSchema.parse(request.body);
+    const { email, password } = validatedData;
     console.log({ email, password }, "login");
 
     const user = await getUser(email);
@@ -53,17 +61,24 @@ export async function loginHandler(request: Request, response: Response) {
     if (!user || !comparePassword(password, user.password)) {
       return response
         .status(ResponseStatus.Unauthorized)
-        .send({ message: ResponseMessages.InvalidCredentials });
+        .send({ message: "Invalid Credentials" });
     }
 
     setUserCookies(response, user);
 
     return response
       .status(ResponseStatus.Success)
-      .send({ message: "Sign in success" });
-  } catch (error: any) {
+      .send({ message: ResponseMessages.Success });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return response
+        .status(ResponseStatus.BadRequest)
+        .json({ message: error.errors[0].message });
+    }
     console.log(error);
-    response.status(500).json({ message: error.message });
+    response
+      .status(ResponseStatus.InternalServerError)
+      .json({ message: ResponseMessages.InternalServerError });
   }
 }
 
@@ -71,7 +86,7 @@ export async function logoutHandler(request: Request, response: Response) {
   try {
     console.log("Logout called");
 
-    const cookieOptions = {
+    const LOGOUT_COOKIE_OPTIONS = {
       httpOnly: true,
       secure: IS_PRODUCTION,
       sameSite: IS_PRODUCTION ? ("none" as const) : ("lax" as const),
@@ -79,53 +94,16 @@ export async function logoutHandler(request: Request, response: Response) {
     };
 
     // Clearing the accessToken and refreshToken cookies
-    response.clearCookie("access_token_flower_box", cookieOptions);
-    response.clearCookie("refresh_token_flower_box", cookieOptions);
+    response.clearCookie("access_token_flower_box", LOGOUT_COOKIE_OPTIONS);
+    response.clearCookie("refresh_token_flower_box", LOGOUT_COOKIE_OPTIONS);
 
     return response
       .status(ResponseStatus.Success)
-      .json({ message: "Successfully logged out" });
+      .json({ message: ResponseMessages.Success });
   } catch (error: any) {
     console.error("Logout error:", error);
     response
-      .status(ResponseStatus.UnexpectedError)
-      .json({ message: "An unexpected error occurred during logout." });
+      .status(ResponseStatus.InternalServerError)
+      .json({ message: ResponseMessages.InternalServerError });
   }
-}
-
-//helpers...
-function setUserCookies(
-  response: Response,
-  user: {
-    id: number;
-    email: string;
-    password: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-) {
-  const accessToken = signJWT(
-    { email: user.email, userId: user.id.toString() },
-    "1h"
-  );
-  const refreshToken = signJWT(
-    { email: user.email, userId: user.id.toString() },
-    "1y"
-  );
-
-  response.cookie("access_token_flower_box", accessToken, {
-    maxAge: ACCESS_TOKEN_MAX_AGE,
-    httpOnly: true,
-    secure: IS_PRODUCTION,
-    sameSite: IS_PRODUCTION ? "none" : "lax",
-    ...(IS_PRODUCTION && { domain: process.env.COOKIE_CLIENT }),
-  });
-
-  response.cookie("refresh_token_flower_box", refreshToken, {
-    maxAge: REFRESH_TOKEN_MAX_AGE,
-    httpOnly: true,
-    secure: IS_PRODUCTION,
-    sameSite: IS_PRODUCTION ? "none" : "lax",
-    ...(IS_PRODUCTION && { domain: process.env.COOKIE_CLIENT }),
-  });
 }
