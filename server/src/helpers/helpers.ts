@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 export function generateSessionID() {
   return Math.random().toString(36).substring(7);
@@ -25,22 +25,22 @@ export function calculateSubscriptionEndDate(subscriptionType: string): Date {
 export function hashPassword(password: string) {
   try {
     const salt = bcrypt.genSaltSync(Number(process.env.BYCRYPT_SALT));
-    console.log(salt,'salt')
+    console.log(salt, "salt");
     const hash = bcrypt.hashSync(password, salt);
-    console.log(hash,'hash')
+    console.log(hash, "hash");
     return hash;
   } catch (error) {
     console.error(error);
-    throw new Error('Hashing failed');
+    throw new Error("Hashing failed");
   }
 }
 
 export function comparePassword(password: string, hashedPassword: string) {
   try {
-    const result =  bcrypt.compareSync(password, hashedPassword);
-    return result
+    const result = bcrypt.compareSync(password, hashedPassword);
+    return result;
   } catch (error) {
     console.error(error);
-    throw new Error('Comparison failed');
+    throw new Error("Comparison failed");
   }
 }
