@@ -1,8 +1,7 @@
 import Stripe from "stripe";
-import { SubscriptionEnum } from "../../helpers/stripeEnums";
+import { SubscriptionEnum } from "../../enums/stripeEnums";
 
-//@ts-ignore
-const stripe = new Stripe(process.env.DEV_STRIPE_SECRECT, {
+const stripe = new Stripe(process.env.DEV_STRIPE_SECRECT || "", {
   apiVersion: "2023-10-16",
 });
 
@@ -19,7 +18,7 @@ async function getSubscription(
   subscriptionType:
     | "1 month subscription"
     | "3 months subscription"
-    | "6 months subscription"
+    | "6 months subscription",
 ) {
   try {
     const unitAmount = SubscriptionEnum[subscriptionType];
