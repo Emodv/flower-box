@@ -1,9 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import { signJWT, verifyJWT } from "../utils/jwt.utils";
 
+import "express";
+
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: JWTPayload;
+  }
+}
+
 interface JWTPayload {
-  email?: string;
-  userId?: string;
+  email: string;
+  userId: string;
+  role: string;
 }
 
 const ACCESS_TOKEN_MAX_AGE = 3600000; // 1 hour in milliseconds
@@ -12,20 +21,20 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
 async function deserializeUser(
   request: Request,
   response: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
-  const { accessToken, refreshToken } = request.cookies;
+  const accessToken = request.cookies["access_token_flower_box"];
+  const refreshToken = request.cookies["refresh_token_flower_box"];
 
-  console.log({ accessToken, refreshToken });
+  console.log({ accessToken, refreshToken }, "test");
 
   if (!accessToken) {
     return next();
   }
-
+  console.log("here in d");
   const { payload, expired } = verifyJWT(accessToken);
 
   if (payload) {
-    //@ts-ignore
     request.user = payload as JWTPayload;
     return next();
   }
@@ -47,7 +56,7 @@ async function deserializeUser(
       email: refreshPayload.email,
       userId: refreshPayload.userId,
     },
-    "1h" // expires in 1 hour.
+    "1h", // expires in 1 hour.
   );
 
   response.cookie("access_token_flower_box", newAccessToken, {
@@ -59,7 +68,7 @@ async function deserializeUser(
   });
 
   const newPayload = verifyJWT(newAccessToken).payload as JWTPayload;
-  //@ts-ignore
+
   request.user = newPayload;
 
   return next();
