@@ -1,25 +1,32 @@
-import { ResponseStatus } from '../helpers/responseEnums';
-
 import { Request, Response, NextFunction } from "express";
+import { ResponseMessages, ResponseStatus } from "../enums/responseEnums";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: JWTPayload;
+const isAuthorized = (requiredRoles?: string[]) => {
+  return (request: Request, response: Response, next: NextFunction) => {
+    if (!request.user || !request.user.email) {
+      return response
+        .status(ResponseStatus.Unauthorized)
+        .send("Invalid session");
     }
-  }
-}
 
-interface JWTPayload {
-  email?: string;
-  userId?: string;
-}
+    if (requiredRoles) {
+      // Ensure the user has a role
+      if (!request.user.role) {
+        return response
+          .status(ResponseStatus.Forbidden)
+          .send(ResponseMessages.Forbidden);
+      }
 
-const requireUser = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.user || !req.user.email) {
-    return res.status(ResponseStatus.UnauthorizedCredentials).send('Invalid session');
-  }
-  next();
+      // Checking for required role
+      if (!requiredRoles.includes(request.user.role)) {
+        return response
+          .status(ResponseStatus.Forbidden)
+          .send(ResponseMessages.Forbidden);
+      }
+    }
+
+    next();
+  };
 };
 
-export default requireUser;
+export default isAuthorized;
