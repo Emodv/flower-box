@@ -1,52 +1,56 @@
-import { hashPassword } from "../../helpers/helpers";
 import prisma from "../../prisma";
+import { hashPassword } from "../../helpers/helpers";
+import { User } from "@prisma/client";
 
-interface userDataParams {
+interface CreateUserInput {
   email: string;
   password: string;
+  role?: string;
 }
 
-export async function createUser(userData: userDataParams) {
-  const pass = hashPassword(userData.password);
-  console.log(pass, 'pass');
+async function createUser(data: CreateUserInput): Promise<User> {
   try {
+    const hashedPassword = await hashPassword(data.password);
     const newUser = await prisma.user.create({
       data: {
-        ...userData,
-        password: pass,
+        email: data.email,
+        password: hashedPassword,
+        role: data.role || "user",
       },
     });
     return newUser;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error creating user:", error);
-    throw new Error("Failed to create user");
+    throw error;
   }
 }
 
-export async function getUser(email: string) {
+async function getUser(email: string): Promise<User | null> {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        email,
+        email: email,
       },
     });
     return user;
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    throw new Error("Failed to fetch user");
+  } catch (error: unknown) {
+    console.error("Error fetching user by email:", error);
+    throw error;
   }
 }
 
-export async function getUserById(id: number) {
+async function getUserById(id: number): Promise<User | null> {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        id,
+        id: id,
       },
     });
     return user;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error fetching user by ID:", error);
-    throw new Error("Failed to fetch user by ID");
+    throw error;
   }
 }
+
+export { createUser, getUser, getUserById };
