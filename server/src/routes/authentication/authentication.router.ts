@@ -9,6 +9,6 @@ import {
 
 awsRouter.post("/sign-up", signupHandler);
 awsRouter.post("/login", loginHandler);
-awsRouter.post("/logout", logoutHandler);
+awsRouter.get("/logout", logoutHandler);
 
 export default awsRouter;
