@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 function sayHello(request: Request, response: Response): void {
-  response.status(200).send("hello!s");
+  response.status(200).send("hello!ss");
 }
 
 export = { sayHello };
