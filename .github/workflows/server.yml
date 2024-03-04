@@ -1,4 +1,4 @@
-name: Node.js Server Workflow
+name: Server Workflow
 
 on:
   push:

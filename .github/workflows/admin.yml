@@ -1,4 +1,4 @@
-name: Next.js Server Workflow
+name: admin Workflow
 
 on:
   push:
