@@ -12,48 +12,7 @@ model User {
   email      String       @unique
   password   String
   role       String       @default("user")
+  userType   String       @default("LOCAL")
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
-  clicks     ProductClick[]
-  transactions Transaction[]
-}
-
-model Product {
-  id          Int          @id @default(autoincrement())
-  name        String
-  description String
-  price       Float
-  images      ProductImage[]
-  clicks      ProductClick[]
-  transactions Transaction[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-}
-
-model ProductImage {
-  id        Int      @id @default(autoincrement())
-  productId Int
-  url       String
-  product   Product  @relation(fields: [productId], references: [id])
-}
-
-model Transaction {
-  id           Int       @id @default(autoincrement())
-  productId    Int
-  userId       Int
-  stripeId     String
-  amount       Float
-  createdAt    DateTime  @default(now())
-  product      Product   @relation(fields: [productId], references: [id])
-  user         User      @relation(fields: [userId], references: [id])
-}
-
-model ProductClick {
-  id        Int      @id @default(autoincrement())
-  productId Int
-  userId    Int
-  createdAt DateTime @default(now())
-  product   Product  @relation(fields: [productId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
-  @@unique([productId, userId])
 }
