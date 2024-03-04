@@ -1,8 +1,15 @@
-import { Router } from "express"
+import { Router } from "express";
 const protectedRouter = Router();
 
-import protectedController from "../../controller/protected/protected.controller"
+import protectedController from "../../controller/protected/protected.controller";
+import isAuthorized from "../../middlewares/requireUser";
+import { Roles } from "../../enums/rolesEnum";
 
-protectedRouter.get("/", protectedController.sayHello);
+protectedRouter.get("/", isAuthorized(), protectedController.sayHello);
+protectedRouter.get(
+  "/admin",
+  isAuthorized([Roles.ADMIN]),
+  protectedController.sayHelloAdmin,
+);
 
-export default protectedRouter
+export default protectedRouter;

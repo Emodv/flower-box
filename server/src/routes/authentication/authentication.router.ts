@@ -1,5 +1,5 @@
 import { Router } from "express";
-const awsRouter = Router();
+const AuthenticationRouter = Router();
 
 import {
   signupHandler,
@@ -7,8 +7,8 @@ import {
   logoutHandler,
 } from "../../controller/authentication/authentication.controller";
 
-awsRouter.post("/sign-up", signupHandler);
-awsRouter.post("/login", loginHandler);
-awsRouter.get("/logout", logoutHandler);
+AuthenticationRouter.post("/sign-up", signupHandler);
+AuthenticationRouter.post("/login", loginHandler);
+AuthenticationRouter.get("/logout", logoutHandler);
 
-export default awsRouter;
+export default AuthenticationRouter;

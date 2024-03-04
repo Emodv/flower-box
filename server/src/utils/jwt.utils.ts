@@ -1,17 +1,23 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.SECRET_KEY || 'your_secret_key_here';
+const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key_here";
 
 interface JWTPayload {
   email?: string;
   userId?: string;
+  role?: string;
 }
 
-export const signJWT = (payload: JWTPayload, expiresIn: string | number): string => {
+export const signJWT = (
+  payload: JWTPayload,
+  expiresIn: string | number,
+): string => {
   return jwt.sign(payload, SECRET_KEY, { expiresIn });
 };
 
-export const verifyJWT = (token: string): { payload: JWTPayload | null; expired: boolean } => {
+export const verifyJWT = (
+  token: string,
+): { payload: JWTPayload | null; expired: boolean } => {
   try {
     const payload = jwt.verify(token, SECRET_KEY) as JWTPayload;
     return { payload, expired: false };

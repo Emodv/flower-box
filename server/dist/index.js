@@ -45,7 +45,7 @@ const httpServer = http.createServer(app_1.default);
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         httpServer.listen(PORT, () => {
-            console.log('Server is listening on', PORT);
+            console.log("Server is listening on", PORT);
         });
     });
 }
