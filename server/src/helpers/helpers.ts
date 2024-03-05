@@ -26,9 +26,7 @@ export function calculateSubscriptionEndDate(subscriptionType: string): Date {
 export function hashPassword(password: string) {
   try {
     const salt = bcrypt.genSaltSync(Number(process.env.BYCRYPT_SALT));
-    console.log(salt, "salt");
     const hash = bcrypt.hashSync(password, salt);
-    console.log(hash, "hash");
     return hash;
   } catch (error) {
     console.error(error);
