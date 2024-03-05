@@ -28,7 +28,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_LOCAL }}
           source: "portal/"
-          target: "/flowerbox/portal/"
+          target: "/flowerbox/"
 
       - name: SSH into EC2 and restart Next.js portal
         uses: appleboy/ssh-action@master
