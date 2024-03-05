@@ -1,3 +1,4 @@
+//@ts-nocheck
 import bcrypt from "bcryptjs";
 
 export function generateSessionID() {
