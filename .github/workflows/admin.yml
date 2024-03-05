@@ -28,7 +28,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_LOCAL }}
           source: "admin/"
-          target: "/flowerbox/admin/"
+          target: "/flowerbox/"
 
       - name: SSH into EC2 and restart Next.js admin
         uses: appleboy/ssh-action@master
