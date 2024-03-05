@@ -8,11 +8,78 @@ datasource db {
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  email      String       @unique
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
   password   String
-  role       String       @default("user")
-  userType   String       @default("LOCAL")
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  role       UserRole   @default(USER)
+  userType   UserType   @default(LOCAL)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Product {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  assets      Asset[]
+  orderItems  OrderItem[]
+}
+
+model Asset {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  url       String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}
+
+model Order {
+  id           Int             @id @default(autoincrement())
+  totalPrice   Float
+  status       OrderStatus     @default(PENDING)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  orderItems   OrderItem[]
+  transaction  Transaction?
+  address      String
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}
+
+model Transaction {
+  id        Int                @id @default(autoincrement())
+  orderId   Int                @unique
+  amount    Float
+  status    TransactionStatus  @default(FAILED)
+  createdAt DateTime           @default(now())
+  order     Order              @relation(fields: [orderId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum UserType {
+  LOCAL
+  GOOGLE_USER
+  FACEBOOK_USER
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+}
+
+enum TransactionStatus {
+  FAILED
+  SUCCESS
 }
