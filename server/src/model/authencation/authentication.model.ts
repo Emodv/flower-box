@@ -1,6 +1,6 @@
 import prisma from "../../prisma";
 import { hashPassword } from "../../helpers/helpers";
-import { User } from "@prisma/client";
+import { User, UserRole } from "@prisma/client";
 
 interface CreateUserInput {
   email: string;
@@ -15,7 +15,7 @@ async function createUser(data: CreateUserInput): Promise<User> {
       data: {
         email: data.email,
         password: hashedPassword,
-        role: data.role || "user",
+        role: UserRole.USER,
       },
     });
     return newUser;

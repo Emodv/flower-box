@@ -1,7 +1,7 @@
-import { Roles } from "../../../enums/rolesEnum";
 import prisma from "../../../prisma";
+import { UserType, UserRole } from "@prisma/client";
 
-export async function findOrCreateUser(email: string, userType: string) {
+export async function findOrCreateUser(email: string, userType: UserType) {
   try {
     let user = await prisma.user.findUnique({
       where: { email },
@@ -12,7 +12,7 @@ export async function findOrCreateUser(email: string, userType: string) {
         data: {
           email,
           password: "OAUTH_NO_PASSWORD",
-          role: Roles.USER,
+          role: UserRole.USER,
           userType,
         },
       });

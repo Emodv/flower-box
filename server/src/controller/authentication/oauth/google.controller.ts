@@ -4,6 +4,7 @@ import axios from "axios";
 import { setUserCookies } from "../helper";
 import { findOrCreateUser } from "../../../model/authencation/oauth/oauth.model";
 import { ResponseStatus, ResponseMessages } from "../../../enums/responseEnums";
+import { UserType } from "@prisma/client";
 
 class GoogleAuthController {
   private clientId: string = process.env.GOOGLE_CLIENT_ID!;
@@ -46,7 +47,7 @@ class GoogleAuthController {
 
       const user = await findOrCreateUser(
         userInfoResponse.data.email,
-        "GOOGLE-USER",
+        UserType.GOOGLE_USER,
       );
 
       setUserCookies(response, user);

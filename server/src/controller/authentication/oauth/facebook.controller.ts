@@ -3,6 +3,7 @@ import axios from "axios";
 import { findOrCreateUser } from "../../../model/authencation/oauth/oauth.model";
 import { setUserCookies } from "../helper";
 import { ResponseStatus, ResponseMessages } from "../../../enums/responseEnums";
+import { UserType } from "@prisma/client";
 
 class FacebookAuthController {
   private appId: string = process.env.FACEBOOK_APP_ID!;
@@ -41,7 +42,7 @@ class FacebookAuthController {
 
       const user = await findOrCreateUser(
         userInfoResponse.data.email,
-        "FACEBOOK-USER",
+        UserType.FACEBOOK_USER,
       );
 
       setUserCookies(response, user);
