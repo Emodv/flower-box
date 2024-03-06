@@ -5,7 +5,7 @@ import { User, UserRole } from "@prisma/client";
 interface CreateUserInput {
   email: string;
   password: string;
-  role?: string;
+  role: string;
 }
 
 async function createUser(data: CreateUserInput): Promise<User> {
