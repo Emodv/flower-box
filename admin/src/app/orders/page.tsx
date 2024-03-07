@@ -148,7 +148,7 @@ const data: Payment[] = [
     order: "ORD015",
     status: "Pending",
     lastOrder: "2024-03-30",
-    method: "Credit Card"
+    method: "Credit Cards"
   }
 ];
 
