@@ -10,6 +10,7 @@ import {
   ShoppingCart,
   LayoutDashboard,
   UsersRound,
+  PlusCircle,
   Settings,
   ChevronRight
 } from "lucide-react";
@@ -50,13 +51,19 @@ export default function SideNavbar({}: Props) {
             variant: "default"
           },
           {
+            title: "Add Product",
+            href: "/add-product",
+            icon: PlusCircle,
+            variant: "ghost"
+          },
+          {
             title: "Users",
             href: "/users",
             icon: UsersRound,
             variant: "ghost"
           },
           {
-            title: "Ordrs",
+            title: "Orders",
             href: "/orders",
             icon: ShoppingCart,
             variant: "ghost"
@@ -66,7 +73,7 @@ export default function SideNavbar({}: Props) {
             href: "/settings",
             icon: Settings,
             variant: "ghost"
-          }
+          },
         ]}
       />
     </div>
