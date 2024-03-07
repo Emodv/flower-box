@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,7 +49,7 @@ export function ProductForm() {
     );
 
     const allFiles = [...(uploadedImages || []), ...imageFiles];
-    form.setValue("productImages", allFiles as any);
+    form.setValue("productImages", allFiles as [File, ...File[]]);
     event.target.value = "";
   };
 
@@ -59,7 +59,7 @@ export function ProductForm() {
       if (event.dataTransfer.files) {
         const newFiles = Array.from(event.dataTransfer.files);
         const allFiles = [...(uploadedImages || []), ...newFiles];
-        form.setValue("productImages", allFiles as any);
+        form.setValue("productImages", allFiles as [File, ...File[]]);
       }
     },
     [uploadedImages, form],
@@ -71,7 +71,7 @@ export function ProductForm() {
 
   const deleteAsset = (index: number) => {
     const newImages = uploadedImages.filter((_, i) => index !== i);
-    form.setValue("productImages", newImages as any, {
+    form.setValue("productImages", newImages as [File, ...File[]], {
       shouldValidate: true,
     });
   };
@@ -115,7 +115,7 @@ export function ProductForm() {
         />
         <div className="mt-4 flex flex-wrap gap-4">
           <div className="mt-4 flex flex-wrap">
-            {uploadedImages?.map((file: any, index: number) => (
+            {uploadedImages?.map((file: File, index: number) => (
               <div className="flex flex-col items-center" key={index}>
                 <div className="mb-2 mr-2 h-20 w-20 overflow-hidden rounded">
                   <Image
