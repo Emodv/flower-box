@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useCallback, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
-import { Trash } from "lucide-react";
+import { MinusCircle, Trash } from "lucide-react";
 import { addProductSchema } from "@/schema/zod";
 
 type FormSchemaType = z.infer<typeof addProductSchema>;
@@ -127,10 +127,10 @@ export function ProductForm() {
                   />
                 </div>
                 <div>
-                  <Trash
+                  <MinusCircle
                     color="red"
                     size={24}
-                    className="cursor-pointer"
+                    className="cursor-pointer rounded-lg hover:bg-gray-100"
                     onClick={() => deleteAsset(index)}
                   />
                 </div>
@@ -138,12 +138,31 @@ export function ProductForm() {
             ))}
           </div>
         </div>
-        <div className="flex w-full sm:flex-col sm:space-x-0 md:flex-row md:space-x-10">
+        <div className="flex w-full flex-col space-x-0 md:flex-row md:space-x-10">
+          <FormField
+            control={form.control}
+            name="productId"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel className="text-md font-normal text-black">
+                  Product ID
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    className="mt-2"
+                    placeholder="Product Name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="mt-2" />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="productName"
             render={({ field }) => (
-              <FormItem className="flex-1">
+              <FormItem className="flex-1 mt-6 md:mt-0">
                 <FormLabel className="text-md font-normal text-black">
                   Product Name
                 </FormLabel>
@@ -154,9 +173,6 @@ export function ProductForm() {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
-                  This is will be your Product Name
-                </FormDescription>
                 <FormMessage className="mt-2" />
               </FormItem>
             )}
@@ -165,14 +181,13 @@ export function ProductForm() {
             control={form.control}
             name="price"
             render={({ field }) => (
-              <FormItem className="flex-1 sm:mt-6 md:mt-0">
+              <FormItem className="flex-1 mt-6 md:mt-0">
                 <FormLabel className="text-md font-normal text-black">
                   Price
                 </FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="Price" {...field} />
                 </FormControl>
-                <FormDescription>Add a price for your product.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
