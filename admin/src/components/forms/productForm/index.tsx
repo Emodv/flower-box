@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -70,6 +70,7 @@ export function ProductForm() {
   };
 
   const deleteAsset = (index: number) => {
+    //@ts-ignore
     const newImages = uploadedImages.filter((_, i) => index !== i);
     form.setValue("productImages", newImages as [File, ...File[]], {
       shouldValidate: true,

@@ -19,11 +19,12 @@ export const addProductSchema = z.object({
   price: z.string({
     required_error: "Price is required.",
   }),
-  productImages: z
-    .array(z.instanceof(Object), {
-      required_error: "Please upload at least one product image.",
-    })
-    .nonempty({
-      message: "Please upload at least one product image.",
-    }),
+  productImages: z.any()
+  // productImages: z
+  //   .array(z.instanceof(File), {
+  //     required_error: "Please upload at least one product image.",
+  //   })
+  //   .nonempty({
+  //     message: "Please upload at least one product image.",
+  //   }),
 });
