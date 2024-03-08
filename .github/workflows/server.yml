@@ -14,11 +14,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-    
-     - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.3.0'
 
       - name: Install dependencies and build Node.js server
         env:
