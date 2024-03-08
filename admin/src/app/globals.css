@@ -1,6 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  } */
+}
+
  
 @layer base {
   :root {
@@ -13,13 +22,13 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
  
-    --primary: #E55472;
+    --primary: #ef6668;
     --primary-foreground: 210 40% 98%;
  
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
  
-    --muted: #fff8f9;
+    --muted: #fff0f0;
     --muted-foreground: 215.4 16.3% 46.9%;
  
     --accent: 210 40% 96.1%;
@@ -30,7 +39,7 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: #ffd0d1;
  
     --radius: 0.5rem;
   }
@@ -67,10 +76,12 @@
 }
  
 @layer base {
+
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
+
 }

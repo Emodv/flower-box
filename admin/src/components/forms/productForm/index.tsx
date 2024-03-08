@@ -17,13 +17,14 @@ import { Input } from "@/components/ui/input";
 import { useCallback, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
-import { MinusCircle, Trash } from "lucide-react";
+import { Loader2, MinusCircle, Trash } from "lucide-react";
 import { addProductSchema } from "@/schema/zod";
+import { Textarea } from "@/components/ui/textarea";
 
 type FormSchemaType = z.infer<typeof addProductSchema>;
 
 export function ProductForm() {
-  const [signUpDisabled, setSignUpDisabled] = useState(false);
+  const [isFormLoading, setFormLoading] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<FormSchemaType>({
@@ -36,9 +37,14 @@ export function ProductForm() {
   const uploadedImages = watch("productImages");
 
   const onSubmit = async (values: FormSchemaType) => {
-    setSignUpDisabled(true);
+    if (!values.productImages) {
+      form.setError("productImages", {
+        message: "Please upload at least one product image.",
+      });
+    }
+    setFormLoading(true);
     console.log(values);
-    setSignUpDisabled(false);
+    setFormLoading(false);
   };
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +85,7 @@ export function ProductForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-[900px] mx-auto">
         <FormField
           name="productImages"
           control={control}
@@ -151,7 +157,7 @@ export function ProductForm() {
                 <FormControl>
                   <Input
                     className="mt-2"
-                    placeholder="Product Name"
+                    placeholder="ID"
                     {...field}
                   />
                 </FormControl>
@@ -163,14 +169,14 @@ export function ProductForm() {
             control={form.control}
             name="productName"
             render={({ field }) => (
-              <FormItem className="flex-1 mt-6 md:mt-0">
+              <FormItem className="mt-6 flex-1 md:mt-0">
                 <FormLabel className="text-md font-normal text-black">
                   Product Name
                 </FormLabel>
                 <FormControl>
                   <Input
                     className="mt-2"
-                    placeholder="Product Name"
+                    placeholder="Name"
                     {...field}
                   />
                 </FormControl>
@@ -182,9 +188,9 @@ export function ProductForm() {
             control={form.control}
             name="price"
             render={({ field }) => (
-              <FormItem className="flex-1 mt-6 md:mt-0">
+              <FormItem className="mt-6 flex-1 md:mt-0">
                 <FormLabel className="text-md font-normal text-black">
-                  Price
+                  Product Price
                 </FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="Price" {...field} />
@@ -203,7 +209,11 @@ export function ProductForm() {
                 Description
               </FormLabel>
               <FormControl>
-                <Input placeholder="Product Description" {...field} />
+              <Textarea
+                  placeholder="Product Description"
+                  className="resize-none"
+                  {...field}
+                />
               </FormControl>
               <FormDescription>
                 Add a description for your product.
@@ -212,7 +222,10 @@ export function ProductForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isFormLoading}>
+          {isFormLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Submit
+        </Button>
       </form>
     </Form>
   );
