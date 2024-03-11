@@ -20,6 +20,19 @@ import Image from "next/image";
 import { Loader2, MinusCircle, Trash } from "lucide-react";
 import { addProductSchema } from "@/schema/zod";
 import { Textarea } from "@/components/ui/textarea";
+import { useMutation } from "@tanstack/react-query";
+import { uploadProduct } from "@/services";
+import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+// import { usePathname } from "next/navigation";
+
+import { categories } from "@/store/data.json";
 
 type FormSchemaType = z.infer<typeof addProductSchema>;
 
@@ -27,24 +40,48 @@ export function ProductForm() {
   const [isFormLoading, setFormLoading] = useState(false);
   const { toast } = useToast();
 
+  const router = useRouter();
+  // const pathname = usePathname();
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(addProductSchema),
     shouldFocusError: true,
   });
-
   const { control, watch } = form;
-
   const uploadedImages = watch("productImages");
 
+  // mutation ---
+  const mutation = useMutation({
+    mutationFn: uploadProduct,
+    onSuccess: (response) => {
+      setFormLoading(false);
+      router.push("/product-upload");
+    },
+    onError: (error: any) => {
+      console.log(error, "errors");
+      toast({
+        title: "errorMessage",
+        description: "There was a problem with your request.",
+        variant: "destructive",
+      });
+      setFormLoading(false);
+    },
+  });
+
+  // submit handler ---
   const onSubmit = async (values: FormSchemaType) => {
     if (!values.productImages) {
       form.setError("productImages", {
         message: "Please upload at least one product image.",
       });
+      return;
     }
     setFormLoading(true);
-    console.log(values);
     setFormLoading(false);
+    console.log(values);
+    mutation.mutate({
+      ...values,
+    });
   };
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,12 +108,8 @@ export function ProductForm() {
     [uploadedImages, form],
   );
 
-  const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-  };
-
   const deleteAsset = (index: number) => {
-    //@ts-ignore
+    // @ts-ignore
     const newImages = uploadedImages.filter((_, i) => index !== i);
     form.setValue("productImages", newImages as [File, ...File[]], {
       shouldValidate: true,
@@ -85,7 +118,10 @@ export function ProductForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-[900px] mx-auto">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="mx-auto max-w-[900px] space-y-6"
+      >
         <FormField
           name="productImages"
           control={control}
@@ -95,7 +131,7 @@ export function ProductForm() {
                 Product Images
               </FormLabel>
               <div
-                onDragOver={onDragOver}
+                onDragOver={(event) => event.preventDefault()}
                 onDrop={onDrop}
                 className="cursor-pointer rounded-md border-2 border-dashed border-gray-300 px-6 py-10 text-center"
               >
@@ -155,11 +191,7 @@ export function ProductForm() {
                   Product ID
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    className="mt-2"
-                    placeholder="ID"
-                    {...field}
-                  />
+                  <Input className="mt-2" placeholder="ID" {...field} />
                 </FormControl>
                 <FormMessage className="mt-2 dark:text-red-800" />
               </FormItem>
@@ -174,11 +206,7 @@ export function ProductForm() {
                   Product Name
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    className="mt-2"
-                    placeholder="Name"
-                    {...field}
-                  />
+                  <Input className="mt-2" placeholder="Name" {...field} />
                 </FormControl>
                 <FormMessage className="mt-2 dark:text-red-800" />
               </FormItem>
@@ -195,7 +223,42 @@ export function ProductForm() {
                 <FormControl>
                   <Input type="number" placeholder="Price" {...field} />
                 </FormControl>
-                <FormMessage className="dark:text-red-800"/>
+                <FormMessage className="dark:text-red-800" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex w-full flex-col space-x-0 md:flex-row md:space-x-10">
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel className="text-md font-normal text-black dark:text-white">
+                  Category
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="mt-2 text-gray-500">
+                      <SelectValue placeholder="Select a Category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {categories.map(
+                      (category: { key: string; value: string }) => {
+                        return (
+                          <SelectItem key={category.key} value={category.value}>
+                            {category.key}
+                          </SelectItem>
+                        );
+                      },
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="mt-2" />
               </FormItem>
             )}
           />
@@ -209,7 +272,7 @@ export function ProductForm() {
                 Description
               </FormLabel>
               <FormControl>
-              <Textarea
+                <Textarea
                   placeholder="Product Description"
                   className="resize-none"
                   {...field}
@@ -218,7 +281,7 @@ export function ProductForm() {
               <FormDescription>
                 Add a description for your product.
               </FormDescription>
-              <FormMessage className="dark:text-red-800"/>
+              <FormMessage className="dark:text-red-800" />
             </FormItem>
           )}
         />
