@@ -6,6 +6,7 @@ import "./globals.css";
 import { cn } from "../lib/utils";
 import SideNavbar from "@/components/SideNavbar";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/lib/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,18 +24,25 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen w-full bg-white text-black flex ",
+          "flex min-h-screen w-full",
           inter.className,
           {
             "debug-screens": process.env.NODE_ENV === "development",
-          }
+          },
         )}
       >
         {/* sidebar */}
         {/* <p className="border">Sidebar</p> */}
         <SideNavbar />
         {/* main page */}
-        <div className="p-4 w-full">{children}</div>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          // enableSystem
+          disableTransitionOnChange
+        >
+          <div className="w-full p-4">{children}</div>
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>
