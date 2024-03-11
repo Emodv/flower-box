@@ -7,6 +7,7 @@ import { cn } from "../lib/utils";
 import SideNavbar from "@/components/SideNavbar";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/lib/theme-provider";
+import QueryProvider from "@/lib/react-query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,19 +32,19 @@ export default function RootLayout({
           },
         )}
       >
-        {/* sidebar */}
-        {/* <p className="border">Sidebar</p> */}
         <SideNavbar />
-        {/* main page */}
+        <QueryProvider>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           // enableSystem
           disableTransitionOnChange
         >
           <div className="w-full p-4">{children}</div>
         </ThemeProvider>
         <Toaster />
+        <Toaster />
+        </QueryProvider>
       </body>
     </html>
   );
