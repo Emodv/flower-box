@@ -19,6 +19,9 @@ export const addProductSchema = z.object({
   price: z.string({
     required_error: "Price is required.",
   }),
+  category: z.string({
+    required_error: "Please Select a a category.",
+  }),
   productImages: z.any()
 //   productImages: z
 //     .array(z.instanceof(File), {

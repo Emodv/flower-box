@@ -1,0 +1,3 @@
+export {
+  uploadProduct
+} from "./adminService";
