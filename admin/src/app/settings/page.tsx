@@ -18,6 +18,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
 import PageTitle from "@/components/PageTitle";
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import { Moon, SunMoon } from "lucide-react";
 
 type Props = {};
 
@@ -29,37 +31,52 @@ interface Setting {
 const columns: ColumnDef<Setting>[] = [
   {
     accessorKey: "category",
-    header: "Category"
+    header: "Category",
   },
   {
     accessorKey: "value",
-    header: "Value"
-  }
+    header: "Value",
+  },
 ];
 const data: Setting[] = [
   {
     category: "Account",
-    value: true
+    value: true,
   },
   {
     category: "Notifications",
-    value: false
+    value: false,
   },
   {
     category: "Language",
-    value: "English"
+    value: "English",
   },
   {
     category: "Theme",
-    value: "Dark"
-  }
+    value: "Dark",
+  },
 ];
 
 export default function SettingsPage({}: Props) {
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  const isActive = theme === "light";
+
   return (
-    <div className="flex flex-col gap-5  w-full">
+    <div className="flex w-full flex-col  gap-5">
       <PageTitle title="Settings" />
       <DataTable columns={columns} data={data} />
+      <>
+        {isActive ? (
+          <SunMoon className="cursor-pointer" onClick={toggleTheme} />
+        ) : (
+          <Moon className="cursor-pointer" onClick={toggleTheme} />
+        )}
+      </>
     </div>
   );
 }

@@ -91,7 +91,7 @@ export function ProductForm() {
           control={control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-md font-normal text-black">
+              <FormLabel className="text-md font-normal text-black dark:text-white">
                 Product Images
               </FormLabel>
               <div
@@ -116,7 +116,7 @@ export function ProductForm() {
                   onChange={onFileChange}
                 />
               </div>
-              <FormMessage className="mt-2" />
+              <FormMessage className="mt-2 dark:text-red-800" />
             </FormItem>
           )}
         />
@@ -151,7 +151,7 @@ export function ProductForm() {
             name="productId"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel className="text-md font-normal text-black">
+                <FormLabel className="text-md font-normal text-black dark:text-white">
                   Product ID
                 </FormLabel>
                 <FormControl>
@@ -161,7 +161,7 @@ export function ProductForm() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="mt-2" />
+                <FormMessage className="mt-2 dark:text-red-800" />
               </FormItem>
             )}
           />
@@ -170,7 +170,7 @@ export function ProductForm() {
             name="productName"
             render={({ field }) => (
               <FormItem className="mt-6 flex-1 md:mt-0">
-                <FormLabel className="text-md font-normal text-black">
+                <FormLabel className="text-md font-normal text-black dark:text-white">
                   Product Name
                 </FormLabel>
                 <FormControl>
@@ -180,7 +180,7 @@ export function ProductForm() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="mt-2" />
+                <FormMessage className="mt-2 dark:text-red-800" />
               </FormItem>
             )}
           />
@@ -189,13 +189,13 @@ export function ProductForm() {
             name="price"
             render={({ field }) => (
               <FormItem className="mt-6 flex-1 md:mt-0">
-                <FormLabel className="text-md font-normal text-black">
+                <FormLabel className="text-md font-normal text-black dark:text-white">
                   Product Price
                 </FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="Price" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="dark:text-red-800"/>
               </FormItem>
             )}
           />
@@ -205,7 +205,7 @@ export function ProductForm() {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-md font-normal text-black">
+              <FormLabel className="text-md font-normal text-black dark:text-white">
                 Description
               </FormLabel>
               <FormControl>
@@ -218,7 +218,7 @@ export function ProductForm() {
               <FormDescription>
                 Add a description for your product.
               </FormDescription>
-              <FormMessage />
+              <FormMessage className="dark:text-red-800"/>
             </FormItem>
           )}
         />
