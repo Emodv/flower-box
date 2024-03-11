@@ -8,68 +8,93 @@ datasource db {
 }
 
 model User {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
-  password   String
-  role       UserRole   @default(USER)
-  userType   UserType   @default(LOCAL)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      UserRole @default(USER)
+  userType  UserType @default(LOCAL)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   description String
   price       Float
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  Tags        Tags[]
+  category    Category       @default(ALL)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
   assets      Asset[]
   orderItems  OrderItem[]
   interaction Interactions[]
 }
 
+model Tags {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  tagName   String
+  product   Product @relation(fields: [productId], references: [id])
+}
+
 model Asset {
-  id        Int      @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   productId Int
   url       String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 }
 
 model Order {
-  id           Int             @id @default(autoincrement())
-  totalPrice   Float
-  status       OrderStatus     @default(PENDING)
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  orderItems   OrderItem[]
-  transaction  Transaction?
-  address      String
+  id          Int          @id @default(autoincrement())
+  totalPrice  Float
+  status      OrderStatus  @default(PENDING)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  orderItems  OrderItem[]
+  transaction Transaction?
+  address     String
 }
 
 model Interactions {
-  id Int @id @default(autoincrement())
-  count Int 
-  sells Int
+  id        Int     @id @default(autoincrement())
+  count     Int
+  sells     Int
   productId Int
-  product Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model OrderItem {
-  id        Int      @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   orderId   Int
   productId Int
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 }
 
 model Transaction {
-  id        Int                @id @default(autoincrement())
-  orderId   Int                @unique
+  id        Int               @id @default(autoincrement())
+  orderId   Int               @unique
   amount    Float
-  status    TransactionStatus  @default(FAILED)
-  createdAt DateTime           @default(now())
-  order     Order              @relation(fields: [orderId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  status    TransactionStatus @default(FAILED)
+  createdAt DateTime          @default(now())
+  order     Order             @relation(fields: [orderId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}
+
+enum Category {
+  ALL
+  SPRING
+  SUMMER
+  AUTUMN
+  WINTER
+  ROMANTIC
+  SYMPATHY
+  CONGRATULATION
+  TROPIC
+  ANNIVERSARY
+  BOUQUETS
+  BASKET
+  VASE
 }
 
 enum UserRole {
