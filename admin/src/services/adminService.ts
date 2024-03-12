@@ -5,14 +5,16 @@ export const uploadProduct = async ({
   productId,
   description,
   price,
-  category,
+  categories,
+  tags,
   productImages,
 }: {
   productName: string;
   productId: string;
   description: string;
   price: string;
-  category: string;
+  categories: string[];
+  tags: string[];
   productImages?: any;
 }) => {
   const formData = new FormData();
@@ -23,7 +25,8 @@ export const uploadProduct = async ({
   formData.append("productId", productId);
   formData.append("description", description);
   formData.append("price", price);
-  formData.append("category", category);
+  // formData.append("categories", categories);
+  // formData.append("tags", tags);
 
   return Instance.post(`/admin/add-product`, formData, {
     headers: {
@@ -31,3 +34,9 @@ export const uploadProduct = async ({
     },
   });
 };
+
+export function loginHandler(userData: { email: string; password: string }) {
+  return Instance.post(`/admin/login`, userData, {
+    headers: {},
+  });
+}

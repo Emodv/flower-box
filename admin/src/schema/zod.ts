@@ -19,15 +19,21 @@ export const addProductSchema = z.object({
   price: z.string({
     required_error: "Price is required.",
   }),
-  category: z.string({
-    required_error: "Please Select a a category.",
-  }),
-  productImages: z.any()
-//   productImages: z
-//     .array(z.instanceof(File), {
-//       required_error: "Please upload at least one product image.",
-//     })
-//     .nonempty({
-//       message: "Please upload at least one product image.",
-//     }),
+  productImages: z.any(),
+  //   productImages: z
+  //     .array(z.instanceof(File), {
+  //       required_error: "Please upload at least one product image.",
+  //     })
+  //     .nonempty({
+  //       message: "Please upload at least one product image.",
+  //     }),
+});
+
+export const signInFormSchema = z.object({
+  email: z
+    .string({ required_error: "Email is required." })
+    .email({ message: "Invalid email address" }),
+  password: z
+    .string({ required_error: "Password is required." })
+    .min(6, { message: "Password must be at least 6 characters" }),
 });

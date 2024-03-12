@@ -23,21 +23,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import { uploadProduct } from "@/services";
 import { useRouter } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-// import { usePathname } from "next/navigation";
 
-import { categories } from "@/store/data.json";
+import { categories, tags } from "@/store/data.json";
+import TagInput from "@/components/ui/tags";
 
 type FormSchemaType = z.infer<typeof addProductSchema>;
 
 export function ProductForm() {
   const [isFormLoading, setFormLoading] = useState(false);
+  const [tag, setTags] = useState<string[]>([]);
+  const [category, setCategories] = useState<string[]>([]);
+  const [tagCategoryError, setTagCategoryError] = useState({
+    tags: "",
+    categories: "",
+  });
   const { toast } = useToast();
 
   const router = useRouter();
@@ -70,19 +69,44 @@ export function ProductForm() {
 
   // submit handler ---
   const onSubmit = async (values: FormSchemaType) => {
-    if (!values.productImages) {
+    let hasError = false;
+    const newTagCategoryError = {
+      tags: "",
+      categories: "",
+    };
+  
+    if (!values.productImages?.length) {
       form.setError("productImages", {
         message: "Please upload at least one product image.",
       });
+      hasError = true;
+    }
+  
+    if (!tag.length) {
+      newTagCategoryError.tags = "Tags is required.";
+      hasError = true;
+    }
+  
+    if (!category.length) {
+      newTagCategoryError.categories = "Categories is required.";
+      hasError = true;
+    }
+  
+    setTagCategoryError(newTagCategoryError);
+  
+    if (hasError) {
       return;
     }
+  
     setFormLoading(true);
-    setFormLoading(false);
     console.log(values);
     mutation.mutate({
       ...values,
+      categories: category,
+      tags: tag,
     });
   };
+  
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = event.target.files ? Array.from(event.target.files) : [];
@@ -114,6 +138,14 @@ export function ProductForm() {
     form.setValue("productImages", newImages as [File, ...File[]], {
       shouldValidate: true,
     });
+  };
+
+  const handleTagsChange = (tags: string[]) => {
+    setTags([...tags]);
+  };
+
+  const handleCategoriesChange = (categories: string[]) => {
+    setCategories([...categories]);
   };
 
   return (
@@ -228,39 +260,18 @@ export function ProductForm() {
             )}
           />
         </div>
-        <div className="flex w-full flex-col space-x-0 md:flex-row md:space-x-10">
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel className="text-md font-normal text-black dark:text-white">
-                  Category
-                </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="mt-2 text-gray-500">
-                      <SelectValue placeholder="Select a Category" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {categories.map(
-                      (category: { key: string; value: string }) => {
-                        return (
-                          <SelectItem key={category.key} value={category.value}>
-                            {category.key}
-                          </SelectItem>
-                        );
-                      },
-                    )}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="mt-2" />
-              </FormItem>
-            )}
+        <div className="flex w-full space-x-0 md:flex-row md:space-x-10">
+          <TagInput
+            hasError={tagCategoryError.categories}
+            label="Categories"
+            predefinedTags={categories}
+            onChange={handleCategoriesChange}
+          />
+          <TagInput
+            hasError={tagCategoryError.tags}
+            label="Tags"
+            predefinedTags={tags}
+            onChange={handleTagsChange}
           />
         </div>
         <FormField
@@ -293,3 +304,19 @@ export function ProductForm() {
     </Form>
   );
 }
+
+// "categories": [
+//   { "key": "all", "value": "ALL" },
+//   { "key": "spring", "value": "SPRING" },
+//   { "key": "summer", "value": "SUMMER" },
+//   { "key": "autumn", "value": "AUTUMN" },
+//   { "key": "winter", "value": "WINTER" },
+//   { "key": "romantic", "value": "ROMANTIC" },
+//   { "key": "sympathy", "value": "SYMPATHY" },
+//   { "key": "congratulation", "value": "CONGRATULATION" },
+//   { "key": "tropic", "value": "TROPIC" },
+//   { "key": "anniversary", "value": "ANNIVERSARY" },
+//   { "key": "bouquets", "value": "BOUQUETS" },
+//   { "key": "basket", "value": "BASKET" },
+//   { "key": "vase", "value": "VASE" }
+// ],
