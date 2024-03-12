@@ -25,8 +25,8 @@ export const uploadProduct = async ({
   formData.append("productId", productId);
   formData.append("description", description);
   formData.append("price", price);
-  formData.append("categories", categories);
-  formData.append("tags", tags);
+  // formData.append("categories", categories);
+  // formData.append("tags", tags);
 
   return Instance.post(`/admin/add-product`, formData, {
     headers: {
