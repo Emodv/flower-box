@@ -7,7 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <div>
-      <div className="flex min-h-screen w-full p-4">
+      <div className="flex min-h-screen w-full">
         <SideNavbar />
         <div className="p-4 w-full">
         {children}
