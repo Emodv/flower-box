@@ -12,8 +12,9 @@ import { comparePassword } from "../../helpers/helpers";
 import { Roles } from "../../enums/rolesEnum";
 
 import { z } from "zod";
-import { signUpLoginSchema } from "../../schema/authentication";
+import { signUpLoginSchema } from "../../schema/validation";
 import { setUserCookies } from "./helper";
+import { UserRole } from "@prisma/client";
 
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
@@ -64,6 +65,46 @@ export async function loginHandler(request: Request, response: Response) {
         .send({ message: "Invalid Credentials" });
     }
 
+    setUserCookies(response, user);
+
+    return response
+      .status(ResponseStatus.Success)
+      .send({ message: ResponseMessages.Success });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return response
+        .status(ResponseStatus.BadRequest)
+        .json({ message: error.errors[0].message });
+    }
+    console.log(error);
+    response
+      .status(ResponseStatus.InternalServerError)
+      .json({ message: ResponseMessages.InternalServerError });
+  }
+}
+
+export async function adminLoginHandler(request: Request, response: Response) {
+  try {
+    const validatedData = signUpLoginSchema.parse(request.body);
+    const { email, password } = validatedData;
+
+    console.log({ email, password }, "logina");
+
+    const user = await getUser(email);
+
+    if (!user || !comparePassword(password, user.password)) {
+      return response
+        .status(ResponseStatus.Unauthorized)
+        .send({ message: "Invalid Credentials" });
+    }
+
+    console.log("here", user);
+    if (!(user.role === UserRole.ADMIN)) {
+      return response
+        .status(ResponseStatus.Unauthorized)
+        .send({ message: "Invalid Credentials" });
+    }
+    console.log("here");
     setUserCookies(response, user);
 
     return response

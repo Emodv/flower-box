@@ -25,10 +25,13 @@ export const uploadProduct = async ({
   formData.append("productId", productId);
   formData.append("description", description);
   formData.append("price", price);
-  // formData.append("categories", categories);
-  // formData.append("tags", tags);
+  const categoriesString = categories.join("+");
+  const tagsString = tags.join("+");
 
-  return Instance.post(`/admin/add-product`, formData, {
+  formData.append("categories", categoriesString);
+  formData.append("tags", tagsString);
+
+  return Instance.post(`/products/add-product`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -36,7 +39,18 @@ export const uploadProduct = async ({
 };
 
 export function loginHandler(userData: { email: string; password: string }) {
-  return Instance.post(`/admin/login`, userData, {
-    headers: {},
+  return Instance.post(`/authentication/admin/login`, userData, {
   });
+}
+
+export function fetchPaginatedProducts({
+  page,
+  pageSize,
+}: {
+  page: number;
+  pageSize: number;
+}) {
+  const url = `/products/get-paginated-products?page=${page}&pageSize=${pageSize}`;
+
+  return Instance.get(url);
 }

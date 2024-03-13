@@ -21,8 +21,10 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { signInFormSchema } from "@/schema/zod";
 import { loginHandler } from "@/services";
+import { CustomAxiosError } from "@/services/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -46,14 +48,15 @@ export default function LoginAccount() {
   const mutation = useMutation({
     mutationFn: loginHandler,
     onSuccess: (response) => {
-      setFormLoading(false);
+      console.log("insuccess")
       router.push("/dashboard");
+      setFormLoading(false);
     },
-    onError: (error: any) => {
-      console.log(error, "errors");
+    onError: (error: CustomAxiosError) => {
+      const message = error.response?.data?.message
       toast({
-        title: "errorMessage",
-        description: "There was a problem with your request.",
+        title: message,
+        description: "Your Credentials are Incorrect!",
         variant: "destructive",
       });
       setFormLoading(false);
@@ -108,7 +111,7 @@ export default function LoginAccount() {
                     Password
                   </FormLabel>
                   <FormControl>
-                    <Input className="mt-2" placeholder="password" {...field} />
+                    <Input className="mt-2" placeholder="password" type="password" {...field} />
                   </FormControl>
                   <FormMessage className="mt-2 dark:text-red-800" />
                 </FormItem>
@@ -116,7 +119,7 @@ export default function LoginAccount() {
             />
           </CardContent>
           <CardFooter className="flex flex-col">
-            <Button type="submit" disabled={isFormLoading}>
+            <Button type="submit" disabled={isFormLoading} className="w-full text-white">
               {isFormLoading && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
