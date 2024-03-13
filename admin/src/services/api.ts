@@ -1,5 +1,5 @@
 // api.js
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 // intances
 const instance = axios.create({
@@ -25,5 +25,14 @@ const handle403Error = () => {
   instance.post("/authentication/logout");
   window.location.href = '/sign-in';
 };
+
+interface CustomErrorResponse {
+  message: string;
+}
+
+export interface CustomAxiosError extends Omit<AxiosError, 'response'> {
+  response?: AxiosResponse<CustomErrorResponse>;
+}
+
 
 export default instance;

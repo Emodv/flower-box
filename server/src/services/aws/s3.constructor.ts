@@ -25,55 +25,69 @@ class S3Service {
     userId: string,
   ): Promise<string[]> {
     const uploadedFileNames: string[] = [];
-
-    for (const file of files) {
-      const fileName = `${S3Service.folderName}/${Date.now()}_${userId}_${file.originalname}`;
-      const params = {
-        Bucket: bucketName,
-        Key: fileName,
-        Body: file.buffer,
-      };
-
-      await s3Client.send(new PutObjectCommand(params));
-      uploadedFileNames.push(fileName);
+    try {
+      for (const file of files) {
+        const fileName = `${S3Service.folderName}/${Date.now()}_${userId}_${file.originalname}`;
+        const params = {
+          Bucket: bucketName,
+          Key: fileName,
+          Body: file.buffer,
+        };
+        console.log(process.env.ACCESS_KEY_ID);
+        console.log(process.env.SECRET_KEY_ID);
+        await s3Client.send(new PutObjectCommand(params));
+        uploadedFileNames.push(fileName);
+      }
+      return uploadedFileNames;
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      throw new Error("Failed to upload images");
     }
-
-    return uploadedFileNames;
   }
 
   public static async deleteImagesByNames(
     imageNames: string[],
   ): Promise<string[]> {
-    const objectsToDelete = imageNames.map((imageName) => ({
-      Key: `${S3Service.folderName}/${imageName}`,
-    }));
+    try {
+      const objectsToDelete = imageNames.map((imageName) => ({
+        Key: `${S3Service.folderName}/${imageName}`,
+      }));
 
-    const params = {
-      Bucket: bucketName,
-      Delete: {
-        Objects: objectsToDelete,
-        Quiet: false,
-      },
-    };
+      const params = {
+        Bucket: bucketName,
+        Delete: {
+          Objects: objectsToDelete,
+          Quiet: false,
+        },
+      };
 
-    await s3Client.send(new DeleteObjectsCommand(params));
-    return imageNames;
+      await s3Client.send(new DeleteObjectsCommand(params));
+      return imageNames;
+    } catch (error) {
+      console.error("Error deleting images:", error);
+      throw new Error("Failed to delete images");
+    }
   }
 
   public static async getSignedUrlForAssets(
     assetNames: string[],
   ): Promise<string[]> {
-    const urls = await Promise.all(
-      assetNames.map(async (assetName) => {
-        const command = new GetObjectCommand({
-          Bucket: bucketName,
-          Key: `${S3Service.folderName}/${assetName}`,
-        });
-        return getSignedUrl(s3Client, command, { expiresIn: 3600 });
-      }),
-    );
+    try {
+      const urls = await Promise.all(
+        assetNames.map(async (assetName) => {
+          const command = new GetObjectCommand({
+            Bucket: bucketName,
+            Key: `${S3Service.folderName}/${assetName}`,
+          });
+          return getSignedUrl(s3Client, command, { expiresIn: 3600 });
+        }),
+      );
 
-    return urls;
+      return urls;
+    } catch (error) {
+      console.error("Error generating signed URLs:", error);
+      throw new Error("Failed to generate signed URLs");
+    }
   }
 }
 

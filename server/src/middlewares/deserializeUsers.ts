@@ -15,7 +15,7 @@ interface JWTPayload {
   role: string;
 }
 
-const ACCESS_TOKEN_MAX_AGE = 3600000; // 1 hour in milliseconds
+const ACCESS_TOKEN_MAX_AGE = 3600000 * 2; // 2 hour in milliseconds
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 async function deserializeUser(
@@ -26,12 +26,12 @@ async function deserializeUser(
   const accessToken = request.cookies["access_token_flower_box"];
   const refreshToken = request.cookies["refresh_token_flower_box"];
 
-  console.log({ accessToken, refreshToken }, "test");
+  console.log({ accessToken, refreshToken });
 
   if (!accessToken) {
     return next();
   }
-  console.log("here in d");
+
   const { payload, expired } = verifyJWT(accessToken);
 
   if (payload) {
@@ -59,7 +59,7 @@ async function deserializeUser(
     "1h", // expires in 1 hour.
   );
 
-  response.cookie("access_token_flower_box", newAccessToken, {
+  response.cookie("`access_token_flower_box`", newAccessToken, {
     maxAge: ACCESS_TOKEN_MAX_AGE,
     httpOnly: true,
     secure: IS_PRODUCTION,

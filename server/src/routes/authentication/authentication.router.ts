@@ -9,6 +9,7 @@ import {
 
 AuthenticationRouter.post("/sign-up", signupHandler);
 AuthenticationRouter.post("/login", loginHandler);
+AuthenticationRouter.post("/admin/login", loginHandler);
 AuthenticationRouter.get("/logout", logoutHandler);
 
 export default AuthenticationRouter;

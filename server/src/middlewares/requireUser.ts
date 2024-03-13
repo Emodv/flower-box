@@ -3,6 +3,7 @@ import { ResponseMessages, ResponseStatus } from "../enums/responseEnums";
 
 const isAuthorized = (requiredRoles?: string[]) => {
   return (request: Request, response: Response, next: NextFunction) => {
+    console.log(request.user, "user");
     if (!request.user || !request.user.email) {
       return response
         .status(ResponseStatus.Unauthorized)
@@ -24,7 +25,7 @@ const isAuthorized = (requiredRoles?: string[]) => {
           .send(ResponseMessages.Forbidden);
       }
     }
-
+    console.log(request.user, "user");
     next();
   };
 };

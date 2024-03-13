@@ -45,6 +45,13 @@ export function ProductForm() {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(addProductSchema),
     shouldFocusError: true,
+    defaultValues: {
+      description:
+        "Generate Lorem Ipsum placeholder text for use in your graphic, print and web layouts, and discover plugins for your favorite writing, design and blogging tools. Explore the origins, history and meaning of the famous passage, and learn how Lorem Ipsum went from scrambled Latin passage to ubiqitous",
+      price: "99.99",
+      productId: "ID233H4I",
+      productName: "Flower's for valentine...",
+    },
   });
   const { control, watch } = form;
   const uploadedImages = watch("productImages");
@@ -54,7 +61,11 @@ export function ProductForm() {
     mutationFn: uploadProduct,
     onSuccess: (response) => {
       setFormLoading(false);
-      router.push("/product-upload");
+      toast({
+        title: "Created!",
+        description: "New Product Added.",
+        variant: "default",
+      });
     },
     onError: (error: any) => {
       console.log(error, "errors");
@@ -74,30 +85,30 @@ export function ProductForm() {
       tags: "",
       categories: "",
     };
-  
+
     if (!values.productImages?.length) {
       form.setError("productImages", {
         message: "Please upload at least one product image.",
       });
       hasError = true;
     }
-  
+
     if (!tag.length) {
       newTagCategoryError.tags = "Tags is required.";
       hasError = true;
     }
-  
+
     if (!category.length) {
       newTagCategoryError.categories = "Categories is required.";
       hasError = true;
     }
-  
+
     setTagCategoryError(newTagCategoryError);
-  
+
     if (hasError) {
       return;
     }
-  
+
     setFormLoading(true);
     console.log(values);
     mutation.mutate({
@@ -106,7 +117,6 @@ export function ProductForm() {
       tags: tag,
     });
   };
-  
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = event.target.files ? Array.from(event.target.files) : [];
@@ -140,13 +150,13 @@ export function ProductForm() {
     });
   };
 
-  const handleTagsChange = (tags: string[]) => {
-    setTags([...tags]);
-  };
+  const handleTagsChange = useCallback((tags: string[]) => {
+    setTags(tags);
+  }, []);
 
-  const handleCategoriesChange = (categories: string[]) => {
-    setCategories([...categories]);
-  };
+  const handleCategoriesChange = useCallback((categories: string[]) => {
+    setCategories(categories);
+  }, []);
 
   return (
     <Form {...form}>
@@ -260,7 +270,7 @@ export function ProductForm() {
             )}
           />
         </div>
-        <div className="flex w-full space-x-0 md:flex-row md:space-x-10">
+        <div className="flex w-full flex-col space-x-0 md:flex-row md:space-x-10">
           <TagInput
             hasError={tagCategoryError.categories}
             label="Categories"
@@ -296,27 +306,14 @@ export function ProductForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isFormLoading}>
+        {/* <div className="flex justify-"> */}
+
+        <Button type="submit" disabled={isFormLoading} className="w-52 bg-[#000215]">
           {isFormLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Submit
         </Button>
+        {/* </div> */}
       </form>
     </Form>
   );
 }
-
-// "categories": [
-//   { "key": "all", "value": "ALL" },
-//   { "key": "spring", "value": "SPRING" },
-//   { "key": "summer", "value": "SUMMER" },
-//   { "key": "autumn", "value": "AUTUMN" },
-//   { "key": "winter", "value": "WINTER" },
-//   { "key": "romantic", "value": "ROMANTIC" },
-//   { "key": "sympathy", "value": "SYMPATHY" },
-//   { "key": "congratulation", "value": "CONGRATULATION" },
-//   { "key": "tropic", "value": "TROPIC" },
-//   { "key": "anniversary", "value": "ANNIVERSARY" },
-//   { "key": "bouquets", "value": "BOUQUETS" },
-//   { "key": "basket", "value": "BASKET" },
-//   { "key": "vase", "value": "VASE" }
-// ],

@@ -12,7 +12,8 @@ import {
   UsersRound,
   PlusCircle,
   Settings,
-  ChevronRight
+  ChevronRight,
+  List
 } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -54,6 +55,12 @@ export default function SideNavbar({}: Props) {
             title: "Add Product",
             href: "/dashboard/add-product",
             icon: PlusCircle,
+            variant: "ghost"
+          },
+          {
+            title: "All Products",
+            href: "/dashboard/all-products",
+            icon: List,
             variant: "ghost"
           },
           {
