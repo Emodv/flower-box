@@ -14,11 +14,14 @@ function parseCookies(cookieHeader: string): Record<string, string> {
 
 export function middleware(request: NextRequest) {
   try {
+    
     const cookieHeader = request.headers.get("cookie") || "";
     const cookies = parseCookies(cookieHeader);
 
-    const accessToken = cookies["accessToken"];
-    const refreshToken = cookies["refreshToken"];
+    const accessToken = cookies["access_token_flower_box"];
+    const refreshToken = cookies["refresh_token_flower_box"];
+
+    console.log({accessToken,refreshToken})
 
     if (!accessToken || !refreshToken) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
