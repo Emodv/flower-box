@@ -64,7 +64,7 @@ export function ProductForm() {
       toast({
         title: "Created!",
         description: "New Product Added.",
-        variant: "default",
+        variant: "sucess",
       });
     },
     onError: (error: any) => {

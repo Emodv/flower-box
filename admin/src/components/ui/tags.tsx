@@ -76,7 +76,7 @@ const TagInput: React.FC<TagInputProps> = ({
             .map((tag, index) => (
               <li
                 key={index}
-                className="cursor-pointer rounded px-4 py-2 hover:bg-muted dark:hover:bg-muted"
+                className="cursor-pointer rounded px-4 py-2 hover:bg-muted dark:hover:bg-[#1e1e23]"
                 onClick={() => toggleTag(tag)}
                 onMouseDown={(e) => e.preventDefault()}
               >
