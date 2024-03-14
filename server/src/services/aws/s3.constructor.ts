@@ -77,7 +77,7 @@ class S3Service {
         assetNames.map(async (assetName) => {
           const command = new GetObjectCommand({
             Bucket: bucketName,
-            Key: `${S3Service.folderName}/${assetName}`,
+            Key: `${assetName}`,
           });
           return getSignedUrl(s3Client, command, { expiresIn: 3600 });
         }),
