@@ -48,15 +48,17 @@ export default function LoginAccount() {
   const mutation = useMutation({
     mutationFn: loginHandler,
     onSuccess: (response) => {
-      console.log("insuccess")
-      router.push("/dashboard");
+      toast({
+        title: "Log in Sucess",
+        variant: "sucess",
+      });
       setFormLoading(false);
+      router.push("/dashboard");
     },
     onError: (error: CustomAxiosError) => {
-      const message = error.response?.data?.message
+      const message = error.response?.data?.message || error.message
       toast({
         title: message,
-        description: "Your Credentials are Incorrect!",
         variant: "destructive",
       });
       setFormLoading(false);
