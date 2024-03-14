@@ -38,7 +38,7 @@ model Tags {
   product   Product  @relation(fields: [productId], references: [id])
 }
 
-model Categories {
+model Categories  {
   id        Int      @id @default(autoincrement())
   productId Int
   category  Category @default(all)

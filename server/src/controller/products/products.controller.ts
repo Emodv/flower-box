@@ -8,6 +8,16 @@ import { ResponseMessages, ResponseStatus } from "../../enums/responseEnums";
 import { uploadProductSchema } from "../../schema/validation";
 import { Category, TagsEnum } from "@prisma/client";
 
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  createdAt: Date;
+  updatedAt: Date;
+  assets: string[];
+}
+
 async function uploadProduct(request: Request, response: Response) {
   try {
     const validatedData = uploadProductSchema.parse(request.body);
@@ -69,7 +79,21 @@ async function getProductsHandler(request: Request, response: Response) {
 
     const products = await getProducts({ page, pageSize });
 
-    return response.status(ResponseStatus.Success).json({ data: products });
+    const processedProducts = await Promise.all(
+      products.map(async (product: Product) => {
+        const signedUrls = await S3Service.getSignedUrlForAssets(
+          product.assets,
+        );
+        return {
+          ...product,
+          assets: signedUrls,
+        };
+      }),
+    );
+
+    return response
+      .status(ResponseStatus.Success)
+      .json({ data: processedProducts });
   } catch (error) {
     console.error("Error fetching products:", error);
     return response

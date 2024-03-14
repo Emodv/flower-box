@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import { Response } from "express";
 import { signJWT } from "../../utils/jwt.utils";
 
-const ACCESS_TOKEN_MAX_AGE = 3600000 * 2; // 2 hour in milliseconds
+const ACCESS_TOKEN_MAX_AGE = 3600000 * 12; // 12 hour in milliseconds
 const REFRESH_TOKEN_MAX_AGE = 3.154e10; // 1 year in milliseconds
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
