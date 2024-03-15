@@ -1,8 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ProductTypes } from "@/types/types";
-import { Description } from "@radix-ui/react-toast";
+// import { Description } from "@radix-ui/react-toast";
 import Image from "next/image";
-import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
 export const columns: ColumnDef<ProductTypes.Product>[] = [
@@ -97,7 +96,6 @@ export const columns: ColumnDef<ProductTypes.Product>[] = [
           {/* {assets?.map((assetUrl: string) => {
             return ( */}
               <div className="w-14" key={assets[0]}>
-                <Suspense fallback={<Loader2></Loader2>}>
                   <Image
                     src={assets[0]}
                     width={100}
@@ -105,7 +103,6 @@ export const columns: ColumnDef<ProductTypes.Product>[] = [
                     alt={`preview`}
                     className="h-full w-full object-cover"
                   />
-                </Suspense>
               </div>
              {/* ); */}
            {/* })} */}
