@@ -22,8 +22,10 @@ jobs:
           PORT: 4000
           BYCRYPT_SALT: ${{ secrets.SALT }}
           SECRET_KEY: ${{ secrets.JWT_SECRET }}
-          # S3_ACCESS_KEY_ID: 
-          # S3_SECRET_KEY_ID: 
+          IAM_ACCESS_KEY_ID: ${{ secrets.IAM_ACCESS_KEY_ID }}
+          IAM_SECRET_KEY_ID: ${{ secrets.IAM_SECRET_KEY_ID }}
+          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
           # STRIPE_SECRET: 
           CLIENT_SERVER: http://flowerbox.naveedalirehmani.online
           COOKIE_CLIENT: .naveedalirehmani.online

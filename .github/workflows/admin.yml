@@ -16,6 +16,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies and build Next.js server
+        env:
+          NEXT_PUBLIC_SERVER: ${{ NEXT_PUBLIC_SERVER }}
         run: |
           cd admin
           npm install
