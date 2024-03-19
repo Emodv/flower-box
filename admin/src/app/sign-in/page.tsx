@@ -48,33 +48,31 @@ export default function LoginAccount() {
   const mutation = useMutation({
     mutationFn: loginHandler,
     onSuccess: (response) => {
+      setFormLoading(false);
       toast({
         title: "Log in Sucess",
         variant: "sucess",
       });
-      setFormLoading(false);
       router.push("/dashboard");
     },
     onError: (error: CustomAxiosError) => {
+      setFormLoading(false);
       const message = error.response?.data?.message || error.message
       toast({
         title: message,
         variant: "destructive",
       });
-      setFormLoading(false);
     },
   });
 
   // submit handler ---
   const onSubmit = async (values: FormSchemaType) => {
-    console.log(values,"asdfsaf")
     setFormLoading(true);
-    setFormLoading(false);
-    console.log(values);
     mutation.mutate({
       ...values
     });
   };
+
   return (
     <Form {...form}>
       <form
