@@ -53,7 +53,7 @@ function ProductDetail({ params }: Props) {
   }, [api]);
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Could not load Products...</div>;
+  if (isError) return <div>Could not load Products....</div>;
 
   const product = data?.data.data;
 
