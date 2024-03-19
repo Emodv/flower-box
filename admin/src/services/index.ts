@@ -1,4 +1,5 @@
 export {
   uploadProduct,
-  loginHandler
+  loginHandler,
+  fetchProduct
 } from "./adminService";

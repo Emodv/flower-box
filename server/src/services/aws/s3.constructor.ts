@@ -50,7 +50,7 @@ class S3Service {
   ): Promise<string[]> {
     try {
       const objectsToDelete = imageNames.map((imageName) => ({
-        Key: `${S3Service.folderName}/${imageName}`,
+        Key: `${imageName}`,
       }));
 
       const params = {
@@ -73,15 +73,15 @@ class S3Service {
     assetNames: string[],
   ): Promise<string[]> {
     try {
-      const urls = await Promise.all(
-        assetNames.map(async (assetName) => {
-          const command = new GetObjectCommand({
-            Bucket: bucketName,
-            Key: `${assetName}`,
-          });
-          return getSignedUrl(s3Client, command, { expiresIn: 3600 });
-        }),
-      );
+      const signUrlAssets = assetNames.map(async (assetName) => {
+        const command = new GetObjectCommand({
+          Bucket: bucketName,
+          Key: `${assetName}`,
+        });
+        return getSignedUrl(s3Client, command, { expiresIn: 3600 });
+      });
+
+      const urls = await Promise.all(signUrlAssets);
 
       return urls;
     } catch (error) {

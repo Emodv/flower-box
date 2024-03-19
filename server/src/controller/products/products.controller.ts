@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import S3Service from "../../services/aws/s3.constructor";
 import {
   createProductWithAssets,
+  deleteProductWithRelations,
+  getProductAssetUrls,
   getProducts,
+  getSingleProductDetails,
 } from "../../model/product/product.model";
 import { ResponseMessages, ResponseStatus } from "../../enums/responseEnums";
 import { uploadProductSchema } from "../../schema/validation";
@@ -101,8 +104,80 @@ async function getProductsHandler(request: Request, response: Response) {
       .json({ message: ResponseMessages.InternalServerError });
   }
 }
+async function getSingleProductController(
+  request: Request,
+  response: Response,
+) {
+  try {
+    const { productId } = request.params;
+
+    if (!productId) {
+      return response
+        .status(ResponseStatus.BadRequest)
+        .json({ message: "Product ID is required." });
+    }
+
+    const productDetails = await getSingleProductDetails({ productId });
+
+    const signedUrls = await S3Service.getSignedUrlForAssets(
+      productDetails.assets,
+    );
+
+    const processedProduct = {
+      ...productDetails,
+      assets: signedUrls,
+    };
+
+    return response
+      .status(ResponseStatus.Success)
+      .json({ data: processedProduct });
+  } catch (error: any) {
+    console.error("Error fetching single product:", error);
+    if (error.message === "Product not found") {
+      return response
+        .status(ResponseStatus.NotFound)
+        .json({ message: "Product not found" });
+    }
+    return response
+      .status(ResponseStatus.InternalServerError)
+      .json({ message: ResponseMessages.InternalServerError });
+  }
+}
+
+async function deleteProductController(request: Request, response: Response) {
+  try {
+    const productId = parseInt(request.params.productId);
+
+    if (isNaN(productId)) {
+      return response
+        .status(ResponseStatus.BadRequest)
+        .json({ message: "Invalid product ID" });
+    }
+
+    const assetUrls = await getProductAssetUrls(productId);
+
+    // Delete the assets from S3 if any exist
+    if (assetUrls.length > 0) {
+      await S3Service.deleteImagesByNames(assetUrls);
+    }
+
+    // Proceed to delete the product and its related entities in the database
+    await deleteProductWithRelations(productId);
+
+    response
+      .status(ResponseStatus.Success)
+      .json({ message: ResponseMessages.Success });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    response
+      .status(ResponseStatus.InternalServerError)
+      .json({ message: ResponseMessages.InternalServerError });
+  }
+}
 
 export default {
   uploadProduct,
   getProductsHandler,
+  deleteProductController,
+  getSingleProductController,
 };

@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
 import {
   Table,
@@ -14,23 +14,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter()
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
-
+  });
+  const pathname = usePathname();
   return (
     <div className="rounded-md border">
       <Table>
@@ -44,10 +47,10 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
-                )
+                );
               })}
             </TableRow>
           ))}
@@ -56,6 +59,17 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
+                onClick={() => {
+                  if (pathname === "/dashboard/all-products") {
+                    const allCells = row.getAllCells();
+                    const rowData = allCells.reduce((acc: any, cell) => {
+                      acc[cell.column.id] = cell.getValue();
+                      return acc;
+                    }, {});
+                    router.push(`/dashboard/all-products/${rowData.id}`)
+                  }
+                }
+              }
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
@@ -76,5 +90,5 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

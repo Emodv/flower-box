@@ -13,11 +13,12 @@ import {
   PlusCircle,
   Settings,
   ChevronRight,
-  List
+  List,
 } from "lucide-react";
 import { Button } from "./ui/button";
 
 import { useWindowWidth } from "@react-hook/window-size";
+import { routes } from "@/types/routes";
 
 export default function SideNavbar({}: Props) {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -47,39 +48,39 @@ export default function SideNavbar({}: Props) {
         links={[
           {
             title: "Dashboard",
-            href: "/dashboard",
+            href: routes.dashboard,
             icon: LayoutDashboard,
-            variant: "default"
+            variant: "default",
           },
           {
             title: "Add Product",
-            href: "/dashboard/add-product",
+            href: routes.add_product,
             icon: PlusCircle,
-            variant: "ghost"
+            variant: "ghost",
           },
           {
             title: "All Products",
-            href: "/dashboard/all-products",
+            href: routes.all_products,
             icon: List,
-            variant: "ghost"
+            variant: "ghost",
           },
           {
             title: "Users",
-            href: "/dashboard/users",
+            href: routes.users,
             icon: UsersRound,
-            variant: "ghost"
+            variant: "ghost",
           },
           {
             title: "Orders",
-            href: "/dashboard/orders",
+            href: routes.orders,
             icon: ShoppingCart,
-            variant: "ghost"
+            variant: "ghost",
           },
           {
             title: "Settings",
-            href: "/dashboard/settings",
+            href: routes.settings,
             icon: Settings,
-            variant: "ghost"
+            variant: "ghost",
           },
         ]}
       />

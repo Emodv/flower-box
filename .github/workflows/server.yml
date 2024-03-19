@@ -27,8 +27,8 @@ jobs:
           AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           # STRIPE_SECRET: 
-          CLIENT_SERVER: http://flowerbox.naveedalirehmani.online
-          COOKIE_CLIENT: .naveedalirehmani.online
+          CLIENT_SERVER: https://admin.flower.box
+          COOKIE_CLIENT: .flower.box
         run: |
           cd server
           npm install

@@ -18,4 +18,16 @@ productsRouter.get(
   adminController.getProductsHandler,
 );
 
+productsRouter.get(
+  "/product/:productId",
+  isAuthorized([Roles.ADMIN]),
+  adminController.getSingleProductController,
+);
+
+productsRouter.get(
+  "/delete-product/:productId",
+  isAuthorized([Roles.ADMIN]),
+  adminController.deleteProductController,
+);
+
 export default productsRouter;
