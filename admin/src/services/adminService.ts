@@ -39,8 +39,7 @@ export const uploadProduct = async ({
 };
 
 export function loginHandler(userData: { email: string; password: string }) {
-  return Instance.post(`/authentication/admin/login`, userData, {
-  });
+  return Instance.post(`/authentication/admin/login`, userData, {});
 }
 
 export function fetchPaginatedProducts({
@@ -51,6 +50,18 @@ export function fetchPaginatedProducts({
   pageSize: number;
 }) {
   const url = `/products/get-paginated-products?page=${page}&pageSize=${pageSize}`;
+
+  return Instance.get(url);
+}
+
+export function deleteProductById({ productId }: { productId: number }) {
+  const url = `/products/delete-product/${productId}`;
+
+  return Instance.get(url);
+}
+
+export function fetchProduct({ productId }: { productId: string }) {
+  const url = `/products/product/${productId}`;
 
   return Instance.get(url);
 }
