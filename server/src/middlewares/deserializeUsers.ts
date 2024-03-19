@@ -3,16 +3,16 @@ import { signJWT, verifyJWT } from "../utils/jwt.utils";
 
 import "express";
 
-declare module "express-serve-static-core" {
-  interface Request {
-    user?: JWTPayload;
-  }
-}
-
 interface JWTPayload {
   email: string;
   userId: string;
   role: string;
+}
+
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: JWTPayload;
+  }
 }
 
 const ACCESS_TOKEN_MAX_AGE = 3600000 * 12; // 12 hour in milliseconds
