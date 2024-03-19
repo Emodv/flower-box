@@ -19,7 +19,6 @@ const TagInput: React.FC<TagInputProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log('rerednered')
     onChange(selectedTags);
     if (predefinedTags.length === selectedTags.length) {
       setDropdownOpen(false);
@@ -70,7 +69,7 @@ const TagInput: React.FC<TagInputProps> = ({
         {hasError}
       </p>
       {dropdownOpen && (
-        <ul className="absolute left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-800 p-1">
+        <ul className="absolute left-0 right-0 z-10 max-h-60 overflow-auto rounded border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-800 p-1">
           {predefinedTags
             .filter((tag) => !selectedTags.includes(tag))
             .map((tag, index) => (
