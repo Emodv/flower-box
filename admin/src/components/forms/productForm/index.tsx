@@ -46,11 +46,11 @@ export function ProductForm() {
     resolver: zodResolver(addProductSchema),
     shouldFocusError: true,
     defaultValues: {
-      description:
-        "Generate Lorem Ipsum placeholder text for use in your graphic, print and web layouts, and discover plugins for your favorite writing, design and blogging tools. Explore the origins, history and meaning of the famous passage, and learn how Lorem Ipsum went from scrambled Latin passage to ubiqitous",
-      price: "99.99",
-      productId: "ID233H4I",
-      productName: "Flower's for valentine...",
+      // description:
+      //   "Generate Lorem Ipsum placeholder text for use in your graphic, print and web layouts, and discover plugins for your favorite writing, design and blogging tools. Explore the origins, history and meaning of the famous passage, and learn how Lorem Ipsum went from scrambled Latin passage to ubiqitous",
+      // price: "99.99",
+      // productId: "ID233H4I",
+      // productName: "Flower's for valentine...",
     },
   });
   const { control, watch } = form;
@@ -110,7 +110,6 @@ export function ProductForm() {
     }
 
     setFormLoading(true);
-    console.log(values);
     mutation.mutate({
       ...values,
       categories: category,
@@ -308,7 +307,7 @@ export function ProductForm() {
         />
         {/* <div className="flex justify-"> */}
 
-        <Button type="submit" disabled={isFormLoading} className="w-52 bg-[#000215]">
+        <Button type="submit" disabled={isFormLoading} className="w-52 bg-darkbg">
           {isFormLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Submit
         </Button>

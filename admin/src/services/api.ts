@@ -21,7 +21,6 @@ instance.interceptors.response.use(
 );
 
 const handle403Error = () => {
-  console.log('user redirect.')
   instance.post("/authentication/logout");
   window.location.href = '/sign-in';
 };
