@@ -28,13 +28,22 @@ const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2">
-          <Image
+          {/* <Image
             className="h-10 w-10"
             src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${row.getValue(
               "name",
             )}`}
             width={100}
             height={100}
+            alt="user-image"
+          /> */}
+          <img
+            className="h-10 w-10"
+            src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${row.getValue(
+              "name",
+            )}`}
+            // width={100}
+            // height={100}
             alt="user-image"
           />
           <p>{row.getValue("name")} </p>
