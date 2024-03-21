@@ -5,6 +5,7 @@ import { cn } from "../lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/lib/theme-provider";
 import QueryProvider from "@/lib/react-query-provider";
+import Navbar from "@/components/navbar/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,21 +21,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={cn(
-          inter.className,
-        )}
-      >
+      <body className={cn(inter.className)}>
         <QueryProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          // enableSystem
-          disableTransitionOnChange
-        >
-          <div>{children}</div>
-        </ThemeProvider>
-        <Toaster />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            // enableSystem
+            disableTransitionOnChange
+          >
+            <div>
+              <Navbar></Navbar>
+              {children}
+            </div>
+          </ThemeProvider>
+          <Toaster />
         </QueryProvider>
       </body>
     </html>
