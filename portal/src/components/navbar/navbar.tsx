@@ -28,13 +28,13 @@ const links = [
 
 function Navbar({}: Props) {
   return (
-    <div className="container flex items-center justify-between pt-4">
+    <div className="container flex items-center justify-between pt-10">
       <div className="flex space-x-10">
         <div className="logo">
           <Image src="/logo.png" height={60} width={140} alt="flowerbox" />
         </div>
         <nav>
-          <ul className="flex items-center h-full space-x-4 font-extralight">
+          <ul className="flex items-center h-full space-x-4 font-light mt-2">
             {links.map((link) => {
               return (
                 <li key={link.href}>
@@ -46,8 +46,8 @@ function Navbar({}: Props) {
         </nav>
       </div>
       <div className="space-x-4">
-        <Button variant="ghost" className="font-extralight text-lg">Sign in </Button>
-        <Button className="bg-[#FFB6C1] shadow-md shadow-[#FFB6C1] rounded-lg">Get Started</Button>
+        <Button variant="ghost" className="font-extralight text-md">Sign in </Button>
+        <Button className="bg-[#FFB6C1] shadow-md shadow-[#FFB6C1] rounded-lg px-6 py-6">Get Started</Button>
       </div>
     </div>
   );
