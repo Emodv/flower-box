@@ -1,17 +1,21 @@
+'use client';
+
 import React from "react";
 import Slider from "react-slick";
 
 type Props = {};
 
-var settings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-};
 
 function ProductsByCatogories({}: Props) {
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+  
   return (
     <div className="container">
       ProductsByCatogories

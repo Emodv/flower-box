@@ -1,11 +1,19 @@
 import prisma from "../../prisma";
-import { Prisma, Category, TagsEnum } from "@prisma/client";
+import {
+  TagsEnum,
+  Prisma,
+  Product as PrismaProduct,
+  Tags as PrismaTags,
+  Categories as PrismaCategories,
+  Asset as PrismaAsset,
+  Category,
+} from "@prisma/client";
 
 interface ProductData {
   name: string;
   description: string;
   price: number;
-  categories: Category[];
+  categories: PrismaCategories[];
   tags: TagsEnum[];
   assetUrls: string[];
 }
@@ -100,6 +108,7 @@ async function getProducts({
     throw new Error("Failed to fetch products");
   }
 }
+
 interface singleProduct {
   productId: string;
 }
@@ -151,10 +160,90 @@ async function getProductAssetUrls(productId: number): Promise<string[]> {
   }
 }
 
+// fetch products by catogries
+
+interface TransformedProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  tags: string[];
+  categories: string[];
+  assets: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface GroupedProducts {
+  [category: string]: TransformedProduct[];
+}
+
+interface ExtendedProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  tags: PrismaTags[];
+  categories: PrismaCategories[];
+  assets: PrismaAsset[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+async function getLimitedProductsByCategories(
+  categoryNames: Category[],
+): Promise<GroupedProducts> {
+  try {
+    const categoryProductPromises: Promise<TransformedProduct[]>[] =
+      categoryNames.map(async (categoryName) => {
+        const products = await prisma.product.findMany({
+          where: {
+            categories: {
+              some: {
+                category: categoryName,
+              },
+            },
+          },
+          take: 10,
+          include: {
+            tags: true,
+            categories: true,
+            assets: true,
+          },
+        });
+
+        return products.map((product: ExtendedProduct) => ({
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          tags: product.tags.map((tag) => tag.tag),
+          categories: product.categories.map((category) => category.category),
+          assets: product.assets.map((asset) => asset.url),
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt,
+        }));
+      });
+
+    const results = await Promise.all(categoryProductPromises);
+    const groupedByCategories: GroupedProducts = {};
+
+    categoryNames.forEach((categoryName, index) => {
+      groupedByCategories[categoryName] = results[index];
+    });
+
+    return groupedByCategories;
+  } catch (error) {
+    console.error("Error fetching limited products by categories:", error);
+    throw new Error("Failed to fetch limited products by categories");
+  }
+}
+
 export {
   createProductWithAssets,
   getProducts,
   deleteProductWithRelations,
   getProductAssetUrls,
   getSingleProductDetails,
+  getLimitedProductsByCategories,
 };
