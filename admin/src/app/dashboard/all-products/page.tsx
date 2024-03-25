@@ -103,7 +103,7 @@ function columns(mutation: any): ColumnDef<ProductTypes.Product>[] {
           <div className="flex h-14 w-full flex-wrap gap-1 font-medium">
             {/* {assets?.map((assetUrl: string) => {
             return ( */}
-            
+
             <div className="w-14" key={assets[0]}>
               <Image
                 src={assets[0]}

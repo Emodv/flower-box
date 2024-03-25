@@ -30,4 +30,9 @@ productsRouter.get(
   adminController.deleteProductController,
 );
 
+productsRouter.post(
+  "/products-by-category",
+  adminController.getProductsByCategoriesHandler,
+);
+
 export default productsRouter;

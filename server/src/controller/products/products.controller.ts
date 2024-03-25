@@ -3,6 +3,7 @@ import S3Service from "../../services/aws/s3.constructor";
 import {
   createProductWithAssets,
   deleteProductWithRelations,
+  getLimitedProductsByCategories,
   getProductAssetUrls,
   getProducts,
   getSingleProductDetails,
@@ -104,6 +105,7 @@ async function getProductsHandler(request: Request, response: Response) {
       .json({ message: ResponseMessages.InternalServerError });
   }
 }
+
 async function getSingleProductController(
   request: Request,
   response: Response,
@@ -175,9 +177,45 @@ async function deleteProductController(request: Request, response: Response) {
   }
 }
 
+async function getProductsByCategoriesHandler(
+  request: Request,
+  response: Response,
+) {
+  try {
+    const { categories } = request.body;
+
+    if (!categories || !Array.isArray(categories) || categories.length === 0) {
+      return response
+        .status(ResponseStatus.BadRequest)
+        .json({ message: "Invalid or missing categories." });
+    }
+
+    const groupedProducts = await getLimitedProductsByCategories(categories);
+
+    for (const category of Object.keys(groupedProducts)) {
+      for (const product of groupedProducts[category]) {
+        if (product.assets.length > 0) {
+          const signedUrls = await S3Service.getSignedUrlForAssets(
+            product.assets,
+          );
+          product.assets = signedUrls;
+        }
+      }
+    }
+
+    return response.status(200).json({ data: groupedProducts });
+  } catch (error) {
+    console.error("Error fetching products by categories:", error);
+    response
+      .status(ResponseStatus.InternalServerError)
+      .json({ message: ResponseMessages.InternalServerError });
+  }
+}
+
 export default {
   uploadProduct,
   getProductsHandler,
   deleteProductController,
   getSingleProductController,
+  getProductsByCategoriesHandler,
 };

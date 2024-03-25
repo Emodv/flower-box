@@ -1,22 +1,12 @@
 import prisma from "../../prisma";
+import { Prisma, Category } from "@prisma/client";
 import {
-  TagsEnum,
-  Prisma,
-  Product as PrismaProduct,
-  Tags as PrismaTags,
-  Categories as PrismaCategories,
-  Asset as PrismaAsset,
-  Category,
-} from "@prisma/client";
-
-interface ProductData {
-  name: string;
-  description: string;
-  price: number;
-  categories: PrismaCategories[];
-  tags: TagsEnum[];
-  assetUrls: string[];
-}
+  ExtendedProduct,
+  GroupedProducts,
+  ProductData,
+  ProductQueryParams,
+  TransformedProduct,
+} from "./types";
 
 async function createProductWithAssets({
   name,
@@ -73,11 +63,6 @@ async function deleteProductWithRelations(productId: number): Promise<void> {
   }
 }
 
-interface ProductQueryParams {
-  page: number;
-  pageSize: number;
-}
-
 async function getProducts({
   page,
   pageSize,
@@ -109,13 +94,11 @@ async function getProducts({
   }
 }
 
-interface singleProduct {
-  productId: string;
-}
-
 async function getSingleProductDetails({
   productId,
-}: singleProduct): Promise<any> {
+}: {
+  productId: string;
+}): Promise<any> {
   try {
     const product = await prisma.product.findUnique({
       where: {
@@ -162,34 +145,6 @@ async function getProductAssetUrls(productId: number): Promise<string[]> {
 
 // fetch products by catogries
 
-interface TransformedProduct {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  tags: string[];
-  categories: string[];
-  assets: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface GroupedProducts {
-  [category: string]: TransformedProduct[];
-}
-
-interface ExtendedProduct {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  tags: PrismaTags[];
-  categories: PrismaCategories[];
-  assets: PrismaAsset[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 async function getLimitedProductsByCategories(
   categoryNames: Category[],
 ): Promise<GroupedProducts> {
@@ -206,8 +161,8 @@ async function getLimitedProductsByCategories(
           },
           take: 10,
           include: {
-            tags: true,
-            categories: true,
+            // tags: true,
+            // categories: true,
             assets: true,
           },
         });
@@ -215,13 +170,13 @@ async function getLimitedProductsByCategories(
         return products.map((product: ExtendedProduct) => ({
           id: product.id,
           name: product.name,
-          description: product.description,
+          // description: product.description,
           price: product.price,
-          tags: product.tags.map((tag) => tag.tag),
-          categories: product.categories.map((category) => category.category),
+          // tags: product.tags.map((tag) => tag.tag),
+          // categories: product.categories.map((category) => category.category),
           assets: product.assets.map((asset) => asset.url),
           createdAt: product.createdAt,
-          updatedAt: product.updatedAt,
+          // updatedAt: product.updatedAt,
         }));
       });
 
