@@ -11,7 +11,10 @@ app.use(cookieParser());
 app.use(deserializeUser);
 
 const corsOptions = {
-  origin: process.env.CLIENT_SERVER,
+  origin: [
+    process.env.CLIENT_SERVER as string,
+    process.env.CLIENT_SERVER_2 as string,
+  ],
   credentials: true,
   optionsSuccessStatus: 200,
 };
