@@ -1,4 +1,5 @@
 import Instance from "@/services/api";
+import { Category } from "@/types/productTypes";
 
 export const uploadProduct = async ({
   productName,
@@ -42,16 +43,25 @@ export function loginHandler(userData: { email: string; password: string }) {
   return Instance.post(`/authentication/admin/login`, userData, {});
 }
 
-export function fetchPaginatedProducts({
-  page,
-  pageSize,
-}: {
-  page: number;
-  pageSize: number;
-}) {
-  const url = `/products/get-paginated-products?page=${page}&pageSize=${pageSize}`;
+// export function fetchPaginatedProducts({
+//   page,
+//   pageSize,
+// }: {
+//   page: number;
+//   pageSize: number;
+// }) {
+//   const url = `/products/get-paginated-products?page=${page}&pageSize=${pageSize}`;
 
-  return Instance.get(url);
+//   return Instance.get(url);
+// }
+
+export function getProductsByCategories({
+  categories,
+}: {
+  categories: Category[];
+}) {
+  const url = `/products/products-by-category`;
+  return Instance.post(url, { categories });
 }
 
 export function deleteProductById({ productId }: { productId: number }) {

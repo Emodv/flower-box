@@ -1,5 +1,6 @@
 export {
   uploadProduct,
   loginHandler,
-  fetchProduct
+  fetchProduct,
+  getProductsByCategories
 } from "./adminService";
