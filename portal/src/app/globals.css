@@ -23,6 +23,7 @@
     --popover-foreground: 222.2 84% 4.9%;
  
     --primary: #ef6668;
+    --primary-subtle: #FFB6C1;
     --primary-foreground: 210 40% 98%;
  
     --secondary: 210 40% 96.1%;
@@ -44,7 +45,10 @@
  
     --radius: 0.5rem;
 
-    --text-subtle : #6D6A6A
+    --text-subtle : #6D6A6A;
+
+    --shadow-full : 0px 6px 42px 0px #FFB6C1;
+    --primary-hover : #fff1f4;
   }
  
   .dark {
@@ -88,4 +92,10 @@
   p{
     font-family: var("--cursive");
   }
+}
+
+/* react slick */
+
+.custom-slider .slick-slide > div {
+    margin: 0 calc(2.5rem / 2);
 }

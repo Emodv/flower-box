@@ -4,8 +4,8 @@ export type Product = {
   description: string;
   price: number;
   createdAt: string;
-  updatedAt: string;
-  tags: string[];
+  updatedAt?: string;
+  tags?: string[];
   categories: string[];
   assets: string[];
 };

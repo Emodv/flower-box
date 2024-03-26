@@ -2,7 +2,9 @@ import { routes } from "@/types/routes";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { Button } from "../ui/button";
+// import { Button } from "../ui/button";
+import { playfair } from "@/font/font";
+import { cn } from "@/lib/utils";
 
 type Props = {};
 const links = [
@@ -34,7 +36,7 @@ function Navbar({}: Props) {
           <Image src="/logo.png" height={60} width={140} alt="flowerbox" />
         </div>
         <nav>
-          <ul className="flex items-center h-full space-x-4 font-light mt-2">
+          <ul className="mt-2 flex h-full items-center space-x-4 font-light">
             {links.map((link) => {
               return (
                 <li key={link.href}>
@@ -46,8 +48,16 @@ function Navbar({}: Props) {
         </nav>
       </div>
       <div className="space-x-4">
-        <Button variant="ghost" className="font-extralight text-md">Sign in </Button>
-        <Button className="bg-[#FFB6C1] shadow-md shadow-[#FFB6C1] rounded-lg px-6 py-6">Get Started</Button>
+        {/* <Button variant="ghost" className="font-extralight text-md">Sign in </Button> */}
+        <Link
+          href="/category"
+          className={cn(
+            playfair.className,
+            "shadow-full rounded-lg bg-primary-subtle px-6 py-4 text-base text-white",
+          )}
+        >
+          Get Started
+        </Link>
       </div>
     </div>
   );

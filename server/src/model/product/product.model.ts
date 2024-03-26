@@ -161,7 +161,6 @@ async function getLimitedProductsByCategories(
           },
           take: 10,
           include: {
-            // tags: true,
             // categories: true,
             assets: true,
           },
@@ -170,13 +169,10 @@ async function getLimitedProductsByCategories(
         return products.map((product: ExtendedProduct) => ({
           id: product.id,
           name: product.name,
-          // description: product.description,
           price: product.price,
-          // tags: product.tags.map((tag) => tag.tag),
           // categories: product.categories.map((category) => category.category),
           assets: product.assets.map((asset) => asset.url),
           createdAt: product.createdAt,
-          // updatedAt: product.updatedAt,
         }));
       });
 

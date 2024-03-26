@@ -7,7 +7,7 @@ type Props = {};
 
 function Header({}: Props) {
   return (
-    <div className="mt-10 bg-[#F3F3F3]  pt-10">
+    <div className="my-14 bg-[#F3F3F3]  pt-10">
       <div className="container flex">
         <div className="text flex-1 pt-8">
           <h2 className={cn(playfair.className, "text-[60px] leading-[70px]")}>
