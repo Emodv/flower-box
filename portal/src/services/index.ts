@@ -1,6 +1,1 @@
-export {
-  uploadProduct,
-  loginHandler,
-  fetchProduct,
-  getProductsByCategories
-} from "./adminService";
+export * as productService from "./productService/productService";
