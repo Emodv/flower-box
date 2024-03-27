@@ -70,7 +70,7 @@ async function uploadProduct(request: Request, response: Response) {
   }
 }
 
-async function getProductsHandler(request: Request, response: Response) {
+async function getPaginatedProducts(request: Request, response: Response) {
   try {
     const page = parseInt(request.query.page as string) || 1;
     const pageSize = parseInt(request.query.pageSize as string) || 10;
@@ -106,10 +106,7 @@ async function getProductsHandler(request: Request, response: Response) {
   }
 }
 
-async function getSingleProductController(
-  request: Request,
-  response: Response,
-) {
+async function getProduct(request: Request, response: Response) {
   try {
     const { productId } = request.params;
 
@@ -146,7 +143,7 @@ async function getSingleProductController(
   }
 }
 
-async function deleteProductController(request: Request, response: Response) {
+async function deleteProduct(request: Request, response: Response) {
   try {
     const productId = parseInt(request.params.productId);
 
@@ -177,10 +174,7 @@ async function deleteProductController(request: Request, response: Response) {
   }
 }
 
-async function getProductsByCategoriesHandler(
-  request: Request,
-  response: Response,
-) {
+async function getProductsByCategories(request: Request, response: Response) {
   try {
     const { categories } = request.body;
 
@@ -214,8 +208,8 @@ async function getProductsByCategoriesHandler(
 
 export default {
   uploadProduct,
-  getProductsHandler,
-  deleteProductController,
-  getSingleProductController,
-  getProductsByCategoriesHandler,
+  getPaginatedProducts,
+  deleteProduct,
+  getProduct,
+  getProductsByCategories,
 };

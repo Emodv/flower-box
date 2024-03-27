@@ -15,24 +15,24 @@ productsRouter.post(
 
 productsRouter.get(
   "/get-paginated-products",
-  adminController.getProductsHandler,
+  adminController.getPaginatedProducts,
 );
 
 productsRouter.get(
   "/product/:productId",
   isAuthorized([Roles.ADMIN]),
-  adminController.getSingleProductController,
+  adminController.getProduct,
 );
 
 productsRouter.get(
   "/delete-product/:productId",
   isAuthorized([Roles.ADMIN]),
-  adminController.deleteProductController,
+  adminController.deleteProduct,
 );
 
 productsRouter.post(
   "/products-by-category",
-  adminController.getProductsByCategoriesHandler,
+  adminController.getProductsByCategories,
 );
 
 export default productsRouter;
