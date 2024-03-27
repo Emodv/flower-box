@@ -3,13 +3,12 @@
 import React from "react";
 import Slider from "react-slick";
 import { useQuery } from "@tanstack/react-query";
-import { getProductsByCategories } from "@/services";
+import { productService } from "@/services";
 import { ProductTypes } from "@/types/types";
 import { Category } from "@/types/productTypes";
-import Link from "next/link";
 import ProductCards from "../cards/productCards";
-import Title from "../title/title";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 interface ProductsByCategoriesProps {
   categories: Category[];
@@ -44,31 +43,31 @@ const settings = {
         slidesToShow: 3,
         slidesToScroll: 3,
         infinite: true,
-        dots: true
-      }
+        dots: true,
+      },
     },
     {
       breakpoint: 1000,
       settings: {
         slidesToShow: 2,
         slidesToScroll: 2,
-        initialSlide: 2
-      }
+        initialSlide: 2,
+      },
     },
     {
       breakpoint: 570,
       settings: {
         slidesToShow: 1,
-        slidesToScroll: 1
-      }
-    }
-  ]
+        slidesToScroll: 1,
+      },
+    },
+  ],
 };
 
 const ProductsByCategories = ({ categories }: ProductsByCategoriesProps) => {
   const { data, isLoading, isError, error } = useQuery<ProductsByCategoryI>({
     queryKey: ["productsByCategories"],
-    queryFn: () => getProductsByCategories({ categories }),
+    queryFn: () => productService.getProductsByCategories({ categories }),
     refetchOnWindowFocus: false,
   });
 
@@ -82,7 +81,7 @@ const ProductsByCategories = ({ categories }: ProductsByCategoriesProps) => {
 
   return (
     <div className="container py-14">
-      <Title>Products by Categories</Title>
+      {/* <Title>Products by Categories</Title> */}
       {categories.map((category) => {
         const products = data?.data?.data[category];
 
@@ -100,7 +99,7 @@ const ProductsByCategories = ({ categories }: ProductsByCategoriesProps) => {
             price: 0,
             createdAt: "",
             categories: [""],
-            placeholder:true
+            placeholder: true,
           });
         }
 
