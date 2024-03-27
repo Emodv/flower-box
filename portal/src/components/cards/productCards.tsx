@@ -20,7 +20,7 @@ function ProductCards({
 }: Props) {
   return (
     <div className="cursor-pointer">
-      <div className="relative h-96 overflow-hidden rounded-xl">
+      <div className="relative h-80 overflow-hidden rounded-xl">
         <Image
           className="h-full"
           src={assets[0]}

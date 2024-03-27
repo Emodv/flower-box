@@ -1,4 +1,4 @@
-import Instance from "@/services/api";
+import Instance from "@/services/axiosApi";
 import { Category } from "@/types/productTypes";
 
 export const uploadProduct = async ({

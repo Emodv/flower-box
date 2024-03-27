@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { signInFormSchema } from "@/schema/zod";
 import { loginHandler } from "@/services";
-import { CustomAxiosError } from "@/services/api";
+import { CustomAxiosError } from "@/services/axiosApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
