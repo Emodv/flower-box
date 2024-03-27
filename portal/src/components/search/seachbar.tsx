@@ -24,6 +24,7 @@ import Slider from "react-slick";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Input } from "../ui/input";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 // import categories from "@/store/data.json";
 
 type Props = {};
@@ -35,7 +36,7 @@ const settings = {
   infinite: true,
   slidesToShow: 10,
   slidesToScroll: 2,
-  initialSlide: 0,
+  // initialSlide: 0,
   nextArrow: <SampleNextArrow />,
   prevArrow: <SamplePrevArrow />,
   responsive: [
@@ -68,8 +69,8 @@ const settings = {
 
 function SearchBar({}: Props) {
   return (
-    <div className="container">
-      <div className="slider-container">
+    <div className="container relative">
+      <div className="slider-container bg-[#fffcfc] pt-10 ">
         <div className="m-auto mb-8 w-[600px]">
           <div className="relative">
             <Input
@@ -81,12 +82,13 @@ function SearchBar({}: Props) {
             />
             <button
               type="submit"
-              className="absolute right-2 top-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary font-medium text-white"
+              className="absolute right-2 top-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary font-medium text-white hover:brightness-90"
             >
               <Search className="text-white" size={16}></Search>
             </button>
           </div>
         </div>
+        <Separator className="w-full border-t-[1px]"/>
         <Slider {...settings}>
           {categories.map(({ name, icon }) => {
             return (
@@ -96,7 +98,7 @@ function SearchBar({}: Props) {
               >
                 <Button
                   variant="ghost"
-                  className="hover:bg-primary-hover flex h-20 w-full flex-col items-center rounded-md py-3"
+                  className="flex h-20 w-full flex-col items-center rounded-md py-3 hover:font-semibold hover:bg-transparent"
                 >
                   {icon}
                   <span className="mt-2 text-sm">{name}</span>
