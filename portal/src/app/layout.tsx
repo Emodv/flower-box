@@ -9,7 +9,8 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import QueryProvider from "@/lib/react-query-provider";
 
 import { Toaster } from "@/components/ui/toaster";
-import Navbar from "@/components/navbar/navbar";
+import Navbar from "@/components/custom/navbar/navbar";
+import MainFooter from "@/components/custom/footer/mainFooter";
 
 export const metadata: Metadata = {
   title: "Flower Box",
@@ -33,6 +34,7 @@ export default function RootLayout({
           >
             <div>
               {children}
+              <MainFooter></MainFooter>
             </div>
           </ThemeProvider>
           <Toaster />
