@@ -1,5 +1,5 @@
 import prisma from "../../prisma";
-import { Prisma, Category } from "@prisma/client";
+import { Prisma, Category, TagsEnum } from "@prisma/client";
 import {
   ExtendedProduct,
   GroupedProducts,
@@ -66,19 +66,51 @@ async function deleteProductWithRelations(productId: number): Promise<void> {
 async function getProducts({
   page,
   pageSize,
-}: ProductQueryParams): Promise<any> {
+  category,
+  searchString,
+}: ProductQueryParams & {
+  category?: Category;
+  searchString?: string;
+}): Promise<any> {
   try {
     const skip = (page - 1) * pageSize;
 
-    const products = await prisma.product.findMany({
-      skip,
-      take: pageSize,
-      include: {
-        tags: true,
-        categories: true,
-        assets: true,
-      },
-    });
+    let whereClause: Prisma.ProductWhereInput = {};
+
+    if (category) {
+      whereClause.categories = {
+        some: {
+          category: category,
+        },
+      };
+    } else if (searchString) {
+      const searchTerms = searchString.split(" ");
+      whereClause = {
+        OR: [
+          { name: { contains: searchString } },
+          {
+            categories: {
+              some: { category: { in: searchTerms as Category[] } },
+            },
+          },
+          { tags: { some: { tag: { in: searchTerms as TagsEnum[] } } } },
+        ],
+      };
+    }
+
+    const [products, totalCount] = await Promise.all([
+      prisma.product.findMany({
+        where: whereClause,
+        skip,
+        take: pageSize,
+        include: {
+          tags: true,
+          categories: true,
+          assets: true,
+        },
+      }),
+      prisma.product.count({ where: whereClause }),
+    ]);
 
     const transformedProducts = products.map((product) => ({
       ...product,
@@ -87,9 +119,13 @@ async function getProducts({
       assets: product.assets.map((asset) => asset.url),
     }));
 
-    return transformedProducts;
+    return {
+      products: transformedProducts,
+      totalCount,
+      hasMore: skip + pageSize < totalCount,
+    };
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching products with filters:", error);
     throw new Error("Failed to fetch products");
   }
 }
@@ -125,7 +161,7 @@ async function getSingleProductDetails({
     return transformedProduct;
   } catch (error) {
     console.error("Error fetching product:", error);
-    throw error; // It's better to throw the original error for the caller to handle
+    throw error;
   }
 }
 
