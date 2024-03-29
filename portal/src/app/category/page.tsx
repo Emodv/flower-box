@@ -1,9 +1,8 @@
 "use client";
 
-import SearchBar from "@/components/search/seachbar";
+import SearchBar from "@/components/custom/search/seachbar";
 import React from "react";
-import ProductsByCatogories from "@/components/products/productsByCategories";
-import { Category } from "@/types/productTypes";
+import PaginatedProducts from "@/components/custom/products/paginatedProducts";
 
 type Props = {};
 
@@ -11,17 +10,11 @@ function Page({}: Props) {
   return (
     <div>
       <div className="sticky top-0 z-10">
-      <SearchBar></SearchBar>
+        <SearchBar></SearchBar>
       </div>
-      <ProductsByCatogories
-          categories={[
-            Category.romantic,
-            Category.anniversary,
-            Category.spring,
-            Category.anniversary,
-            Category.summer,
-          ]}
-        />
+      <div className="py-20">
+      <PaginatedProducts></PaginatedProducts>
+      </div>
     </div>
   );
 }
