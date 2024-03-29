@@ -73,15 +73,23 @@ async function uploadProduct(request: Request, response: Response) {
 async function getPaginatedProducts(request: Request, response: Response) {
   try {
     const page = parseInt(request.query.page as string) || 1;
-    const pageSize = parseInt(request.query.pageSize as string) || 10;
+    const pageSize = parseInt(request.query.pageSize as string) || 12;
 
-    if (page < 1 || pageSize < 1) {
+    if (isNaN(page) || isNaN(pageSize) || page < 1 || pageSize < 1) {
       return response
         .status(ResponseStatus.BadRequest)
         .json({ message: "Invalid pagination parameters." });
     }
 
-    const products = await getProducts({ page, pageSize });
+    const category = request.query.category as Category | undefined;
+    const searchString = request.query.searchString as string | undefined;
+
+    const { products, totalCount, hasMore } = await getProducts({
+      page,
+      pageSize,
+      category,
+      searchString,
+    });
 
     const processedProducts = await Promise.all(
       products.map(async (product: Product) => {
@@ -97,7 +105,7 @@ async function getPaginatedProducts(request: Request, response: Response) {
 
     return response
       .status(ResponseStatus.Success)
-      .json({ data: processedProducts });
+      .json({ data: processedProducts, totalCount, hasMore });
   } catch (error) {
     console.error("Error fetching products:", error);
     return response
