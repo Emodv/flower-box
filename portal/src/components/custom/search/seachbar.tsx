@@ -21,9 +21,9 @@ import {
 } from "lucide-react";
 import React from "react";
 import Slider from "react-slick";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import Link from "next/link";
-import { Input } from "../ui/input";
+import { Input } from "../../ui/input";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 // import categories from "@/store/data.json";
 
@@ -46,7 +46,6 @@ const settings = {
         slidesToShow: 8,
         slidesToScroll: 8,
         infinite: true,
-        dots: true,
       },
     },
     {

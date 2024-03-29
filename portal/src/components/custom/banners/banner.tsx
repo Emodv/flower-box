@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 // import Title from "../title/title";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 type Props = {};
 

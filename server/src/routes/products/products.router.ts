@@ -18,11 +18,7 @@ productsRouter.get(
   adminController.getPaginatedProducts,
 );
 
-productsRouter.get(
-  "/product/:productId",
-  isAuthorized([Roles.ADMIN]),
-  adminController.getProduct,
-);
+productsRouter.get("/product/:productId", adminController.getProduct);
 
 productsRouter.get(
   "/delete-product/:productId",

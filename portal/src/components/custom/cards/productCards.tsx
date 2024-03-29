@@ -1,6 +1,7 @@
 import { montserrat } from "@/font/font";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 type Props = {
@@ -9,6 +10,7 @@ type Props = {
   name: string;
   discount?: boolean;
   placeholder?: boolean;
+  id: number;
 };
 
 function ProductCards({
@@ -17,9 +19,15 @@ function ProductCards({
   name,
   discount = false,
   placeholder = false,
+  id,
 }: Props) {
+  const router = useRouter();
+
   return (
-    <div className="cursor-pointer">
+    <div
+      className="cursor-pointer"
+      onClick={() => router.push(`/category/${id}`)}
+    >
       <div className="relative h-80 overflow-hidden rounded-xl">
         <Image
           className="h-full"
@@ -27,7 +35,8 @@ function ProductCards({
           layout="fill"
           objectFit="cover"
           alt={`Image of ${name}`}
-          loading="lazy"
+          placeholder="blur"
+          blurDataURL="/placeholderProduct.jpg"
         />
       </div>
       <div className="mt-4 flex flex-col items-center">

@@ -3,7 +3,7 @@
 import React from "react";
 import Slider from "react-slick";
 import { useQuery } from "@tanstack/react-query";
-import { getProductsByCategories } from "@/services";
+import { productService } from "@/services";
 import { ProductTypes } from "@/types/types";
 import { Category } from "@/types/productTypes";
 import Link from "next/link";
@@ -63,7 +63,7 @@ const settings = {
 const TopProducts = ({ categories }: TopProductsI) => {
   const { data, isLoading, isError, error } = useQuery<ProductsByCategoryI>({
     queryKey: ["productsByCategories"],
-    queryFn: () => getProductsByCategories({ categories }),
+    queryFn: () => productService.getProductsByCategories({ categories }),
     refetchOnWindowFocus: false,
   });
 

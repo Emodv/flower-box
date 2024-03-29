@@ -9,7 +9,7 @@ type Props = {
 
 function Offer(props: Props) {
   return (
-    <div className={cn("")}>
+    <div >
       <Image {...props} layout="fill" objectFit="cover"></Image>
     </div>
   );

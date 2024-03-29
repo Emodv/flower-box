@@ -11,6 +11,16 @@
 }
 
  
+@layer components{
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, auto));
+    grid-template-rows: auto;
+    justify-content: center;
+    grid-gap: 2rem;
+  }
+}
+
 @layer base {
   :root {
     --background: #fffcfc;

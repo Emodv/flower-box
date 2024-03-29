@@ -1,5 +1,6 @@
 import Instance from "@/services/axiosApi";
 import { Category } from "@/types/productTypes";
+import axios from "axios";
 
 export const uploadProduct = async ({
   productName,
@@ -69,6 +70,35 @@ export function deleteProductById({ productId }: { productId: number }) {
 
   return Instance.get(url);
 }
+
+export const fetchPaginatedProducts = async ({
+  pageParam = 1,
+  category,
+  searchString,
+}: {
+  pageParam: number;
+  category?: Category;
+  searchString?: string;
+}) => {
+  const pageSize = 4;
+  let queryString = `/products/get-paginated-products?page=${pageParam}&pageSize=${pageSize}`;
+
+  if (category) {
+    queryString += `&category=${encodeURIComponent(category)}`;
+  }
+
+  if (searchString) {
+    queryString += `&searchString=${encodeURIComponent(searchString)}`;
+  }
+
+  const response = await Instance.get(queryString);
+  const { data, totalCount, hasMore } = response.data;
+
+  return {
+    data,
+    nextPage: hasMore ? pageParam + 1 : undefined,
+  };
+};
 
 export function fetchProduct({ productId }: { productId: string }) {
   const url = `/products/product/${productId}`;

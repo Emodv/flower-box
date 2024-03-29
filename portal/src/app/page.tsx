@@ -1,13 +1,13 @@
 import React from "react";
 import Header from "./(home)/header";
 
-import ProductsByCatogories from "@/components/products/productsByCategories";
-import TopProducts from "@/components/products/productsWithDiscount";
+import ProductsByCatogories from "@/components/custom/products/productsByCategories";
+import TopProducts from "@/components/custom/products/productsWithDiscount";
 
 import { Category } from "@/types/productTypes";
-import Banner from "@/components/banners/banner";
-import JoinUs from "@/components/joinus/joinus";
-import Navbar from "@/components/navbar/navbar";
+import Banner from "@/components/custom/banners/banner";
+import JoinUs from "@/components/custom/joinus/joinus";
+import Navbar from "@/components/custom/navbar/navbar";
 
 type Props = {};
 
