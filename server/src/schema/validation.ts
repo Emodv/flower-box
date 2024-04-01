@@ -12,6 +12,7 @@ export const signUpLoginSchema = z.object({
 export const uploadProductSchema = z.object({
   productName: z.string({ required_error: "Product name is required." }),
   description: z.string({ required_error: "Description is required." }),
+  productId: z.string({ required_error: "productId is required." }),
   price: z
     .string({ required_error: "Price is required." })
     .regex(/^\d+(\.\d{1,2})?$/, "Invalid price format."),

@@ -80,7 +80,7 @@ export const fetchPaginatedProducts = async ({
   category?: Category;
   searchString?: string;
 }) => {
-  const pageSize = 4;
+  const pageSize = 8;
   let queryString = `/products/get-paginated-products?page=${pageParam}&pageSize=${pageSize}`;
 
   if (category) {
@@ -105,3 +105,7 @@ export function fetchProduct({ productId }: { productId: string }) {
 
   return Instance.get(url);
 }
+
+export const checkoutHandler = async ({ address }: { address: string }) => {
+  return Instance.post("/orders/create-order", { address });
+};

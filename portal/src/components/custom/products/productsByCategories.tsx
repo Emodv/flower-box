@@ -9,6 +9,9 @@ import { Category } from "@/types/productTypes";
 import ProductCards from "../cards/productCards";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import useStore from "@/state/store";
+import { useRouter } from "next/navigation";
 
 interface ProductsByCategoriesProps {
   categories: Category[];
@@ -65,6 +68,11 @@ const settings = {
 };
 
 const ProductsByCategories = ({ categories }: ProductsByCategoriesProps) => {
+
+  const {setCategory} = useStore(state=>state)
+  
+  const router = useRouter();
+
   const { data, isLoading, isError, error } = useQuery<ProductsByCategoryI>({
     queryKey: ["productsByCategories"],
     queryFn: () => productService.getProductsByCategories({ categories }),
@@ -98,7 +106,7 @@ const ProductsByCategories = ({ categories }: ProductsByCategoriesProps) => {
             description: "",
             price: 0,
             createdAt: "",
-            categories: [""],
+            categories: [],
             placeholder: true,
           });
         }
@@ -107,12 +115,16 @@ const ProductsByCategories = ({ categories }: ProductsByCategoriesProps) => {
           <div key={category} className="my-10">
             <div className="flex justify-between px-6 py-4">
               <h3 className="text-lg capitalize text-primary">{category}</h3>
-              <Link
-                href="/"
-                className="text-md flex items-center justify-center gap-2 text-subtle transition-all hover:gap-3"
+              <Button
+                variant='ghost'
+                className="hover:bg-primary-hover text-md flex items-center justify-center gap-2 text-subtle transition-all hover:gap-3"
+                onClick={()=>{
+                  setCategory(category)
+                  router.push('/category')
+                }}
               >
                 See more <ArrowRight size={18} />
-              </Link>
+              </Button>
             </div>
             <Slider {...settings}>
               {extendedProducts.map((item) => (

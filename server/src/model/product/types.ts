@@ -13,6 +13,7 @@ export interface ProductData {
   categories: Category[];
   tags: TagsEnum[];
   assetUrls: string[];
+  productId: string;
 }
 
 export interface ProductQueryParams {
