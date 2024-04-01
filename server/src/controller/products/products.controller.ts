@@ -32,6 +32,7 @@ async function uploadProduct(request: Request, response: Response) {
       price,
       categories: categoriesString,
       tags: tagsString,
+      productId,
     } = validatedData;
 
     const files: Express.Multer.File[] = request.files as Express.Multer.File[];
@@ -57,6 +58,7 @@ async function uploadProduct(request: Request, response: Response) {
       categories,
       tags,
       assetUrls,
+      productId,
     });
 
     response

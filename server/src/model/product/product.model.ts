@@ -15,10 +15,12 @@ async function createProductWithAssets({
   categories,
   tags,
   assetUrls,
+  productId,
 }: ProductData): Promise<Prisma.Prisma__ProductClient<any>> {
   try {
     const product = await prisma.product.create({
       data: {
+        productId,
         name,
         description,
         price,
@@ -73,6 +75,8 @@ async function getProducts({
   searchString?: string;
 }): Promise<any> {
   try {
+    console.log(category, searchString, "value");
+
     const skip = (page - 1) * pageSize;
 
     let whereClause: Prisma.ProductWhereInput = {};
@@ -85,18 +89,25 @@ async function getProducts({
       };
     } else if (searchString) {
       const searchTerms = searchString.split(" ");
+      const searchTermCategories = searchTerms.filter((item: string) => {
+        return Object.values(Category).includes(item as Category);
+      });
+      const searchTermTags = searchTerms.filter((item: string) => {
+        return Object.values(TagsEnum).includes(item as TagsEnum);
+      });
       whereClause = {
         OR: [
           { name: { contains: searchString } },
           {
             categories: {
-              some: { category: { in: searchTerms as Category[] } },
+              some: { category: { in: searchTermCategories as Category[] } },
             },
           },
-          { tags: { some: { tag: { in: searchTerms as TagsEnum[] } } } },
+          { tags: { some: { tag: { in: searchTermTags as TagsEnum[] } } } },
         ],
       };
     }
+    console.log(JSON.stringify(whereClause), "where");
 
     const [products, totalCount] = await Promise.all([
       prisma.product.findMany({

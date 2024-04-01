@@ -1,12 +1,12 @@
-  export type Product = {
+export type Product = {
   id: number;
   name: string;
   description: string;
   price: number;
   createdAt: string;
   updatedAt?: string;
-  tags?: string[];
-  categories: string[];
+  tags?: TagsEnum[];
+  categories: Category[];
   assets: string[];
 };
 
@@ -24,4 +24,85 @@ export enum Category {
   bouquets = "bouquets",
   basket = "basket",
   vase = "vase",
+}
+
+export enum TagsEnum {
+  all = "all",
+  Roses = "Roses",
+  Lilies = "Lilies",
+  Tulips = "Tulips",
+  Sunflowers = "Sunflowers",
+  Orchids = "Orchids",
+  Peonies = "Peonies",
+  Daisies = "Daisies",
+  Hydrangeas = "Hydrangeas",
+  Carnations = "Carnations",
+  Chrysanthemums = "Chrysanthemums",
+  Gerberas = "Gerberas",
+  Freesia = "Freesia",
+  Lavender = "Lavender",
+  Gardenias = "Gardenias",
+  Ranunculus = "Ranunculus",
+  Alstroemeria = "Alstroemeria",
+  Gladiolus = "Gladiolus",
+  Marigolds = "Marigolds",
+  Violets = "Violets",
+  Poppies = "Poppies",
+  Anemones = "Anemones",
+  Irises = "Irises",
+  Daffodils = "Daffodils",
+  Magnolias = "Magnolias",
+  Jasmine = "Jasmine",
+  Lilacs = "Lilacs",
+  Snapdragons = "Snapdragons",
+  Azaleas = "Azaleas",
+  Begonias = "Begonias",
+  Camellias = "Camellias",
+  Red = "Red",
+  Yellow = "Yellow",
+  Pink = "Pink",
+  White = "White",
+  Blue = "Blue",
+  Orange = "Orange",
+  Purple = "Purple",
+  Green = "Green",
+  Black = "Black",
+  Mixed_Colors = "Mixed_Colors",
+  Fragrant = "Fragrant",
+  Non_Fragrant = "Non_Fragrant",
+  Indoor = "Indoor",
+  Outdoor = "Outdoor",
+  Seasonal = "Seasonal",
+  Year_Round = "Year_Round",
+  Exotic = "Exotic",
+  Local = "Local",
+  Sustainable = "Sustainable",
+  Eco_Friendly = "Eco_Friendly",
+  Birthday = "Birthday",
+  Wedding = "Wedding",
+  Funeral = "Funeral",
+  Get_Well = "Get_Well",
+  Im_Sorry = "Im_Sorry",
+  Thank_You = "Thank_You",
+  New_Baby = "New_Baby",
+  Mother_Day = "Mother_Day",
+  Valentine_Day = "Valentine_Day",
+  Christmas = "Christmas",
+  Easter = "Easter",
+  Halloween = "Halloween",
+  Anniversary = "Anniversary",
+  Congratulations = "Congratulations",
+  Love_Romance = "Love_Romance",
+  Sympathy_Funeral = "Sympathy_Funeral",
+  Housewarming = "Housewarming",
+  Graduation = "Graduation",
+  Retirement = "Retirement",
+  Prom = "Prom",
+  DIY = "DIY",
+  Bouquets = "Bouquets",
+  Arrangements = "Arrangements",
+  Single_Stem = "Single_Stem",
+  Potted = "Potted",
+  DriedFlowers = "DriedFlowers",
+  Artificial_Flower = "Artificial_Flower",
 }
