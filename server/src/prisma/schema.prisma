@@ -23,6 +23,7 @@ model Product {
   name        String
   description String         @db.LongText
   price       Float
+  productId   String
   tags        Tags[]
   categories  Categories[]
   createdAt   DateTime       @default(now())
@@ -55,7 +56,6 @@ model Asset {
 
 model Order {
   id          Int          @id @default(autoincrement())
-  totalPrice  Float
   status      OrderStatus  @default(PENDING)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -78,6 +78,7 @@ model OrderItem {
   productId Int
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   product   Product @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  quantity  Int
 }
 
 model Transaction {
