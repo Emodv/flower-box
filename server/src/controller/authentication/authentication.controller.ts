@@ -7,9 +7,12 @@ import {
   // getUserById,
   // invalidateExistingSession,
 } from "../../model/authencation/authentication.model";
-import { ResponseMessages, ResponseStatus } from "../../enums/responseEnums";
+import {
+  ResponseMessages,
+  ResponseStatus,
+} from "../../types/enums/responseEnums";
 import { comparePassword } from "../../helpers/helpers";
-import { Roles } from "../../enums/rolesEnum";
+import { Roles } from "../../types/enums/rolesEnum";
 
 import { z } from "zod";
 import { signUpLoginSchema } from "../../schema/validation";

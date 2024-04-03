@@ -3,7 +3,10 @@ import axios from "axios";
 
 import { setUserCookies } from "../helper";
 import { findOrCreateUser } from "../../../model/authencation/oauth/oauth.model";
-import { ResponseStatus, ResponseMessages } from "../../../enums/responseEnums";
+import {
+  ResponseStatus,
+  ResponseMessages,
+} from "../../../types/enums/responseEnums";
 import { UserType } from "@prisma/client";
 
 class GoogleAuthController {

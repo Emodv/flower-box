@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import axios from "axios";
 import { findOrCreateUser } from "../../../model/authencation/oauth/oauth.model";
 import { setUserCookies } from "../helper";
-import { ResponseStatus, ResponseMessages } from "../../../enums/responseEnums";
+import {
+  ResponseStatus,
+  ResponseMessages,
+} from "../../../types/enums/responseEnums";
 import { UserType } from "@prisma/client";
 
 class FacebookAuthController {

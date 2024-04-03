@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ResponseMessages, ResponseStatus } from "../enums/responseEnums";
+import { ResponseMessages, ResponseStatus } from "../types/enums/responseEnums";
 
 const isAuthorized = (requiredRoles?: string[]) => {
   return (request: Request, response: Response, next: NextFunction) => {
