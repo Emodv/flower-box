@@ -1,14 +1,10 @@
 import { Request, Response } from "express";
-import S3Service from "../../services/aws/s3.constructor";
+import S3Service from "../../services/aws/s3.service";
+import * as productModel from "../../model/product/product.model";
 import {
-  createProductWithAssets,
-  deleteProductWithRelations,
-  getLimitedProductsByCategories,
-  getProductAssetUrls,
-  getProducts,
-  getSingleProductDetails,
-} from "../../model/product/product.model";
-import { ResponseMessages, ResponseStatus } from "../../enums/responseEnums";
+  ResponseMessages,
+  ResponseStatus,
+} from "../../types/enums/responseEnums";
 import { uploadProductSchema } from "../../schema/validation";
 import { Category, TagsEnum } from "@prisma/client";
 
@@ -51,7 +47,7 @@ async function uploadProduct(request: Request, response: Response) {
     const uploadedFileNames = await S3Service.uploadImages(files, userId);
     const assetUrls = uploadedFileNames;
 
-    const product = await createProductWithAssets({
+    const product = await productModel.createProductWithAssets({
       name: productName,
       description,
       price: parseFloat(price),
@@ -86,7 +82,7 @@ async function getPaginatedProducts(request: Request, response: Response) {
     const category = request.query.category as Category | undefined;
     const searchString = request.query.searchString as string | undefined;
 
-    const { products, totalCount, hasMore } = await getProducts({
+    const { products, totalCount, hasMore } = await productModel.getProducts({
       page,
       pageSize,
       category,
@@ -126,7 +122,9 @@ async function getProduct(request: Request, response: Response) {
         .json({ message: "Product ID is required." });
     }
 
-    const productDetails = await getSingleProductDetails({ productId });
+    const productDetails = await productModel.getSingleProductDetails({
+      productId,
+    });
 
     const signedUrls = await S3Service.getSignedUrlForAssets(
       productDetails.assets,
@@ -163,7 +161,7 @@ async function deleteProduct(request: Request, response: Response) {
         .json({ message: "Invalid product ID" });
     }
 
-    const assetUrls = await getProductAssetUrls(productId);
+    const assetUrls = await productModel.getProductAssetUrls(productId);
 
     // Delete the assets from S3 if any exist
     if (assetUrls.length > 0) {
@@ -171,7 +169,7 @@ async function deleteProduct(request: Request, response: Response) {
     }
 
     // Proceed to delete the product and its related entities in the database
-    await deleteProductWithRelations(productId);
+    await productModel.deleteProductWithRelations(productId);
 
     response
       .status(ResponseStatus.Success)
@@ -194,7 +192,8 @@ async function getProductsByCategories(request: Request, response: Response) {
         .json({ message: "Invalid or missing categories." });
     }
 
-    const groupedProducts = await getLimitedProductsByCategories(categories);
+    const groupedProducts =
+      await productModel.getLimitedProductsByCategories(categories);
 
     for (const category of Object.keys(groupedProducts)) {
       for (const product of groupedProducts[category]) {
@@ -216,7 +215,35 @@ async function getProductsByCategories(request: Request, response: Response) {
   }
 }
 
+async function getTopProducts(request: Request, response: Response) {
+  try {
+    const topProducts = await productModel.getTopProductsByInteractions();
+
+    const processedProducts = await Promise.all(
+      topProducts.map(async (product: any) => {
+        const signedUrls = product.assets
+          ? await S3Service.getSignedUrlForAssets(product.assets)
+          : [];
+        return {
+          ...product,
+          assets: signedUrls,
+        };
+      }),
+    );
+
+    return response
+      .status(ResponseStatus.Success)
+      .json({ data: processedProducts });
+  } catch (error) {
+    console.error("Error fetching top products by interactions:", error);
+    return response
+      .status(ResponseStatus.InternalServerError)
+      .json({ message: ResponseMessages.InternalServerError });
+  }
+}
+
 export default {
+  getTopProducts,
   uploadProduct,
   getPaginatedProducts,
   deleteProduct,

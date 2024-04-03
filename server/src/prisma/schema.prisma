@@ -68,7 +68,7 @@ model Interactions {
   id        Int     @id @default(autoincrement())
   count     Int
   sells     Int
-  productId Int
+  productId Int     @unique
   product   Product @relation(fields: [productId], references: [id])
 }
 

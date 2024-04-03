@@ -12,7 +12,7 @@ function Page({}: Props) {
       <div className="sticky top-0 z-10">
         <SearchBar></SearchBar>
       </div>
-      <div className="py-20">
+      <div className="pt-10 pb-20">
       <PaginatedProducts></PaginatedProducts>
       </div>
     </div>

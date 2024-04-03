@@ -3,7 +3,7 @@ const productsRouter = Router();
 
 import { upload } from "../../config/multer.config";
 import adminController from "../../controller/products/products.controller";
-import { Roles } from "../../enums/rolesEnum";
+import { Roles } from "../../types/enums/rolesEnum";
 import isAuthorized from "../../middlewares/requireUser";
 
 productsRouter.post(
@@ -30,5 +30,7 @@ productsRouter.post(
   "/products-by-category",
   adminController.getProductsByCategories,
 );
+
+productsRouter.get("/products-by-interaction", adminController.getTopProducts);
 
 export default productsRouter;

@@ -65,6 +65,35 @@ async function deleteProductWithRelations(productId: number): Promise<void> {
   }
 }
 
+async function getTopProductsByInteractions(): Promise<any> {
+  try {
+    const topProducts = await prisma.product.findMany({
+      include: {
+        interaction: true,
+        assets: true,
+      },
+      orderBy: {
+        interaction: {
+          _count: "desc",
+        },
+      },
+      take: 10,
+    });
+
+    const transformedProduct = topProducts.map((product) => {
+      return {
+        ...product,
+        assets: product.assets.map((asset) => asset.url),
+      };
+    });
+
+    return transformedProduct;
+  } catch (error) {
+    console.error("Error fetching top products by interactions:", error);
+    throw new Error("Failed to fetch top products");
+  }
+}
+
 async function getProducts({
   page,
   pageSize,
@@ -75,13 +104,11 @@ async function getProducts({
   searchString?: string;
 }): Promise<any> {
   try {
-    console.log(category, searchString, "value");
-
     const skip = (page - 1) * pageSize;
 
     let whereClause: Prisma.ProductWhereInput = {};
 
-    if (category) {
+    if (category && category !== Category.all) {
       whereClause.categories = {
         some: {
           category: category,
@@ -244,4 +271,5 @@ export {
   getProductAssetUrls,
   getSingleProductDetails,
   getLimitedProductsByCategories,
+  getTopProductsByInteractions,
 };
