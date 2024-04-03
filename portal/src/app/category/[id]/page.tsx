@@ -1,12 +1,11 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import { fetchProduct } from "@/services/productService/productService";
+import * as productService from "@/services/productService/productService";
 import { ProductTypes } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import {
   Boxes,
-  CarTaxiFront,
   CircleDollarSign,
   QrCode,
   ShoppingCart,
@@ -14,13 +13,11 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import Slider from "react-slick";
 import Tag from "@/components/custom/tags/tag";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -28,6 +25,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import useStore from "@/state/store";
+import useInteraction from "@/customHooks/useInteractions";
 
 interface singleProduct {
   data: {
@@ -41,14 +39,16 @@ type Props = {
 
 function Page({ params }: Props) {
   const setCartItem = useStore((state) => state.setCartItem);
+  
+  useInteraction(params.id)
 
   const { data, isLoading, isError, error } = useQuery<singleProduct>({
     queryKey: ["product"],
-    queryFn: () => fetchProduct({ productId: params.id }),
+    queryFn: () => productService.fetchProduct({ productId: params.id }),
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Could not load Products....</div>;
+  if (isLoading) return <div className="container">Loading...</div>;
+  if (isError) return <div className="container">Could not load Products....</div>;
 
   const product = data?.data.data as ProductTypes.Product;
 
