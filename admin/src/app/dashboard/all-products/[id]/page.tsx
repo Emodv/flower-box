@@ -57,8 +57,6 @@ function ProductDetail({ params }: Props) {
 
   const product = data?.data.data;
 
-  console.log(product, "single-data");
-
   return (
     <div>
       <PageTitle title="Product details" />
