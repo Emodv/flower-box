@@ -28,6 +28,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           # STRIPE_SECRET: 
           CLIENT_SERVER: https://admin.flower.box
+          CLIENT_SERVER_2: https://www.flower.box
           COOKIE_CLIENT: .flower.box
         run: |
           cd server
@@ -53,5 +54,18 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_LOCAL }}
           script: |
+            export NODE_ENV= production
+            export DATABASE_URL= ${{ secrets.DATABASE_URL }}
+            export PORT= 4000
+            export BYCRYPT_SALT= ${{ secrets.SALT }}
+            export SECRET_KEY= ${{ secrets.JWT_SECRET }}
+            export IAM_ACCESS_KEY_ID= ${{ secrets.IAM_ACCESS_KEY_ID }}
+            export IAM_SECRET_KEY_ID= ${{ secrets.IAM_SECRET_KEY_ID }}
+            export AWS_S3_BUCKET_NAME= ${{ secrets.AWS_S3_BUCKET_NAME }}
+            export AWS_REGION= ${{ secrets.AWS_REGION }}
+            export DEV_STRIPE_SECRECT= ${{ secrets.DEV_STRIPE_SECRECT }}
+            export CLIENT_SERVER= https://admin.flower.box
+            export CLIENT_SERVER_2= https://www.flower.box
+            export COOKIE_CLIENT= .flower.box
             source ~/.nvm/nvm.sh
             /home/***/.nvm/versions/node/v20.11.1/bin/pm2 restart index
