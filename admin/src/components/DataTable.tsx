@@ -4,6 +4,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -15,23 +16,38 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { Button } from "./ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  fetchNextPage?: () => void;
+  fetchPreviousPage?: () => void;
+  hasNextPage?: boolean;
+  pageIndex: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  fetchNextPage,
+  fetchPreviousPage,
+  hasNextPage,
+  pageIndex
 }: DataTableProps<TData, TValue>) {
-  const router = useRouter()
+  const router = useRouter();
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 4,
+      },
+    },
   });
   const pathname = usePathname();
   return (
@@ -66,10 +82,9 @@ export function DataTable<TData, TValue>({
                       acc[cell.column.id] = cell.getValue();
                       return acc;
                     }, {});
-                    router.push(`/dashboard/all-products/${rowData.id}`)
+                    router.push(`/dashboard/all-products/${rowData.id}`);
                   }
-                }
-              }
+                }}
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
@@ -89,6 +104,33 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+      {/* <Button
+        onClick={() => table.firstPage()}
+        disabled={!table.getCanPreviousPage()}
+      >
+        {"<<"}
+      </Button> */}
+      <Button
+        onClick={fetchPreviousPage}
+        // disabled={!table.getCanPreviousPage()}
+      >
+        {"<"}
+      </Button>
+      <Button
+        onClick={()=>{
+          fetchNextPage()
+          table.nextPage()
+        }}
+        disabled={!hasNextPage}
+      >
+        {">"}
+      </Button>
+      {/* <Button
+        onClick={() => table.lastPage()}
+        disabled={!table.getCanNextPage()}
+      >
+        {">>"}
+      </Button> */}
     </div>
   );
 }

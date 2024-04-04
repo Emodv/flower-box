@@ -42,17 +42,26 @@ export function loginHandler(userData: { email: string; password: string }) {
   return Instance.post(`/authentication/admin/login`, userData, {});
 }
 
-export function fetchPaginatedProducts({
-  page,
-  pageSize,
+export const fetchPaginatedProducts = async ({
+  pageParam = 1,
 }: {
-  page: number;
-  pageSize: number;
-}) {
-  const url = `/products/get-paginated-products?page=${page}&pageSize=${pageSize}`;
+  pageParam: number;
+}) => {
+  const pageSize = 4;
+  let queryString = `/products/get-paginated-products?page=${pageParam}&pageSize=${pageSize}`;
 
-  return Instance.get(url);
-}
+  const response = await Instance.get(queryString);
+  const { data, totalCount, hasMore } = response.data;
+
+  const nextPage = hasMore ? pageParam + 1 : undefined;
+  const prevPage = pageParam > 1 ? pageParam - 1 : undefined;
+
+  return {
+    data,
+    nextPage,
+    prevPage,
+  };
+};
 
 export function deleteProductById({ productId }: { productId: number }) {
   const url = `/products/delete-product/${productId}`;

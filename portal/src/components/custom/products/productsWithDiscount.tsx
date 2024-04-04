@@ -5,21 +5,14 @@ import Slider from "react-slick";
 import { useQuery } from "@tanstack/react-query";
 import { productService } from "@/services";
 import { ProductTypes } from "@/types/types";
-import { Category } from "@/types/productTypes";
 import Link from "next/link";
 import ProductCards from "../cards/productCards";
 import Title from "../title/title";
-import { ArrowRight, ArrowRightSquare } from "lucide-react";
-
-interface TopProductsI {
-  categories: Category[];
-}
+import { ArrowRight } from "lucide-react";
 
 interface ProductsByCategoryI {
   data: {
-    data: {
-      [key in Category]?: ProductTypes.Product[];
-    };
+    data: ProductTypes.Product[];
   };
 }
 
@@ -60,10 +53,10 @@ const settings = {
     },
   ],
 };
-const TopProducts = ({ categories }: TopProductsI) => {
+const TopProducts = () => {
   const { data, isLoading, isError, error } = useQuery<ProductsByCategoryI>({
-    queryKey: ["productsByCategories"],
-    queryFn: () => productService.getProductsByCategories({ categories }),
+    queryKey: ["topProducts"],
+    queryFn: productService.getTopProducts,
     refetchOnWindowFocus: false,
   });
 
@@ -75,36 +68,18 @@ const TopProducts = ({ categories }: TopProductsI) => {
       </div>
     );
 
+  console.log(data?.data?.data, "data");
+
   return (
     <div className="container py-14">
       <Title>Top Products</Title>
-      {categories.map((category) => {
-        const products = data?.data?.data[category];
-        if (products && products.length > 0) {
-          return (
-            <div key={category} className="my-10">
-              <div className="flex justify-between px-6 py-4">
-                <h3 className="text-lg capitalize text-primary">
-                  Top Products
-                </h3>
-                <Link
-                  href="/"
-                  className="text-md flex justify-center gap-2 text-subtle transition-all hover:gap-3"
-                >
-                  See more <ArrowRight></ArrowRight>
-                </Link>
-              </div>
-              <Slider {...settings}>
-                {products.map((item) => (
-                  <ProductCards key={item.id} {...item} discount></ProductCards>
-                ))}
-              </Slider>
-            </div>
-          );
-        } else {
-          return null;
-        }
-      })}
+      <div className="my-10">
+        <Slider {...settings}>
+          {data?.data?.data.map((item) => (
+            <ProductCards key={item.id} {...item} discount></ProductCards>
+          ))}
+        </Slider>
+      </div>
     </div>
   );
 };
