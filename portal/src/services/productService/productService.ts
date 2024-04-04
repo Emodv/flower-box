@@ -71,6 +71,11 @@ export function deleteProductById({ productId }: { productId: number }) {
   return Instance.get(url);
 }
 
+export async function interaction(productId: string) {
+  const url = `/interactions/count?interaction=${productId}`;
+  await Instance.get(url);
+}
+
 export const fetchPaginatedProducts = async ({
   pageParam = 1,
   category,
@@ -106,6 +111,18 @@ export function fetchProduct({ productId }: { productId: string }) {
   return Instance.get(url);
 }
 
-export const checkoutHandler = async ({ address }: { address: string }) => {
-  return Instance.post("/orders/create-order", { address });
+export function getTopProducts() {
+  const url = `/products/products-by-interaction`;
+
+  return Instance.get(url);
+}
+
+export const checkoutHandler = async (payload: {
+  address: string, orderItems: {
+    quantity: number;
+    productId: number;
+  }[],
+  promo:string
+}) => {
+  return Instance.post("/orders/create-order", payload);
 };
