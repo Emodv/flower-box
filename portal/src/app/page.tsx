@@ -26,7 +26,7 @@ function Page({}: Props) {
             // Category.summer,
           ]}
         />
-        <TopProducts categories={[Category.romantic]} />
+        <TopProducts/>
         <Banner></Banner>
         <JoinUs></JoinUs>
       </div>
