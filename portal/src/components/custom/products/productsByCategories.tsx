@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import useStore from "@/state/store";
 import { useRouter } from "next/navigation";
+import Title from "../title/title";
 
 interface ProductsByCategoriesProps {
   categories: Category[];
@@ -68,9 +69,8 @@ const settings = {
 };
 
 const ProductsByCategories = ({ categories }: ProductsByCategoriesProps) => {
+  const { setCategory } = useStore((state) => state);
 
-  const {setCategory} = useStore(state=>state)
-  
   const router = useRouter();
 
   const { data, isLoading, isError, error } = useQuery<ProductsByCategoryI>({
@@ -79,17 +79,17 @@ const ProductsByCategories = ({ categories }: ProductsByCategoriesProps) => {
     refetchOnWindowFocus: false,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div className="container">Loading...</div>;
   if (isError)
     return (
-      <div>
+      <div className="container">
         Error: {error instanceof Error ? error.message : "Unknown error"}
       </div>
     );
 
   return (
     <div className="container py-14">
-      {/* <Title>Products by Categories</Title> */}
+      <Title>Products by Categories</Title>
       {categories.map((category) => {
         const products = data?.data?.data[category];
 
@@ -116,11 +116,11 @@ const ProductsByCategories = ({ categories }: ProductsByCategoriesProps) => {
             <div className="flex justify-between px-6 py-4">
               <h3 className="text-lg capitalize text-primary">{category}</h3>
               <Button
-                variant='ghost'
-                className="hover:bg-primary-hover text-md flex items-center justify-center gap-2 text-subtle transition-all hover:gap-3"
-                onClick={()=>{
-                  setCategory(category)
-                  router.push('/category')
+                variant="ghost"
+                className="text-md flex items-center justify-center gap-2 text-subtle transition-all hover:gap-3 hover:bg-primary-hover"
+                onClick={() => {
+                  setCategory(category);
+                  router.push("/category");
                 }}
               >
                 See more <ArrowRight size={18} />
