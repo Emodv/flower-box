@@ -25,7 +25,6 @@ const isAuthorized = (requiredRoles?: string[]) => {
           .send(ResponseMessages.Forbidden);
       }
     }
-    console.log(request.user, "user");
     next();
   };
 };
