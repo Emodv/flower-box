@@ -91,7 +91,6 @@ export async function adminLoginHandler(request: Request, response: Response) {
     const validatedData = signUpLoginSchema.parse(request.body);
     const { email, password } = validatedData;
 
-    console.log({ email, password }, "logina");
 
     const user = await getUser(email);
 
@@ -101,13 +100,11 @@ export async function adminLoginHandler(request: Request, response: Response) {
         .send({ message: "Invalid Credentials" });
     }
 
-    console.log("here", user);
     if (!(user.role === UserRole.ADMIN)) {
       return response
         .status(ResponseStatus.Unauthorized)
         .send({ message: "Invalid Credentials" });
     }
-    console.log("here");
     setUserCookies(response, user);
 
     return response
@@ -128,7 +125,6 @@ export async function adminLoginHandler(request: Request, response: Response) {
 
 export async function logoutHandler(request: Request, response: Response) {
   try {
-    console.log("Logout called");
 
     const LOGOUT_COOKIE_OPTIONS = {
       httpOnly: true,
