@@ -1,32 +1,29 @@
 "use client";
 
-import { DataTable } from "@/components/DataTable";
 import React from "react";
 import { useState } from "react";
 import {
   useInfiniteQuery,
   useMutation,
-  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import * as adminService from "@/services/adminService";
 import PageTitle from "@/components/PageTitle";
-import { ColumnDef } from "@tanstack/react-table";
-import { ProductTypes } from "@/types/types";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { ChevronDown, Trash } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { CustomAxiosError } from "@/services/api";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useParams, useSearchParams } from "next/navigation";
 
 type Props = {};
 
@@ -37,9 +34,12 @@ type Props = {};
 // }
 
 function ProductList({}: Props) {
-  const [formLoading, setFormLoading] = useState(false);
-
+  const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const searchParams = useSearchParams();
+
+  const [formLoading, setFormLoading] = useState(false);
 
   const {
     data,
@@ -60,8 +60,6 @@ function ProductList({}: Props) {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage,
   });
-
-  const { toast } = useToast();
 
   const mutation = useMutation({
     mutationFn: adminService.deleteProductById,
@@ -88,112 +86,94 @@ function ProductList({}: Props) {
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Could not load Products...</div>;
 
-  const pageIndex = data?.pageParams[data?.pageParams.length-1]
-  const products = data?.pages.flatMap((page) => page.data) || [];
-  console.log(products, "products");
-  console.log(pageIndex, "pageIndex");
+  console.log(data?.pages, "data-data");
+  const search = searchParams.get("page");
+  console.log(search, "search");
 
   return (
     <div className="flex w-full flex-col gap-5">
       <PageTitle title="Product list" />
-      <DataTable
-        columns={columns(mutation)}
-        data={products}
-        fetchNextPage={fetchNextPage}
-        fetchPreviousPage={fetchPreviousPage}
-        hasNextPage={hasNextPage}
-        pageIndex={pageIndex}
-      />
+      <div className="table">
+        <Table>
+          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Invoice</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Method</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data?.pages[search]?.data.map((invoice) => {
+              console.log(invoice,"invoice")
+              return (
+                <TableRow key={invoice.id}>
+                  <TableCell className="font-medium">{invoice.name}</TableCell>
+                  <TableCell>{invoice.description}</TableCell>
+                  <TableCell>{invoice.createdAt}</TableCell>
+                  <TableCell className="text-right">
+                    {invoice.price}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={3}>Total</TableCell>
+              <TableCell className="text-right">$2,500.00</TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </div>
     </div>
   );
 }
 
 export default ProductList;
 
-function columns(mutation: any): ColumnDef<ProductTypes.Product>[] {
-  return [
-    {
-      accessorKey: "id",
-      header: "ID",
-    },
-    {
-      accessorKey: "assets",
-      header: "Image",
-      cell: ({ row }) => {
-        const assets: string[] = row.getValue("assets");
-        return (
-          <div className="flex h-14 w-full flex-wrap gap-1 font-medium">
-            {/* {assets?.map((assetUrl: string) => {
-            return ( */}
-
-            <div className="w-14" key={assets[0]}>
-              <Image
-                src={assets[0]}
-                width={100}
-                height={100}
-                alt={`preview`}
-                className="h-full w-full object-cover"
-              />
-            </div>
-            {/* ); */}
-            {/* })} */}
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "name",
-      header: "Product title",
-    },
-
-    {
-      accessorKey: "price",
-      header: "Price",
-    },
-    {
-      accessorKey: "createdAt",
-      header: "Created At",
-      cell: ({ row }) => {
-        const date = new Date(row.getValue("createdAt"));
-        const formatted = date.toLocaleDateString();
-        return <div className="font-medium">{formatted}</div>;
-      },
-    },
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <ChevronDown size={15} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  className="flex cursor-pointer space-x-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const productId = row.original.id;
-                    mutation.mutate({
-                      productId,
-                    });
-                  }}
-                >
-                  <Trash size={15} color="red" />
-
-                  <p>Delete Item</p>
-                  {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-    },
-  ];
-}
+const invoices = [
+  {
+    invoice: "INV001",
+    paymentStatus: "Paid",
+    totalAmount: "$250.00",
+    paymentMethod: "Credit Card",
+  },
+  {
+    invoice: "INV002",
+    paymentStatus: "Pending",
+    totalAmount: "$150.00",
+    paymentMethod: "PayPal",
+  },
+  {
+    invoice: "INV003",
+    paymentStatus: "Unpaid",
+    totalAmount: "$350.00",
+    paymentMethod: "Bank Transfer",
+  },
+  {
+    invoice: "INV004",
+    paymentStatus: "Paid",
+    totalAmount: "$450.00",
+    paymentMethod: "Credit Card",
+  },
+  {
+    invoice: "INV005",
+    paymentStatus: "Paid",
+    totalAmount: "$550.00",
+    paymentMethod: "PayPal",
+  },
+  {
+    invoice: "INV006",
+    paymentStatus: "Pending",
+    totalAmount: "$200.00",
+    paymentMethod: "Bank Transfer",
+  },
+  {
+    invoice: "INV007",
+    paymentStatus: "Unpaid",
+    totalAmount: "$300.00",
+    paymentMethod: "Credit Card",
+  },
+];
