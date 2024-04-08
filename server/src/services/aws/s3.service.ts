@@ -33,8 +33,7 @@ class S3Service {
           Key: fileName,
           Body: file.buffer,
         };
-        console.log(process.env.ACCESS_KEY_ID);
-        console.log(process.env.SECRET_KEY_ID);
+
         await s3Client.send(new PutObjectCommand(params));
         uploadedFileNames.push(fileName);
       }
