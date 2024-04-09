@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import {
   useInfiniteQuery,
@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, Trash } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { CustomAxiosError } from "@/services/api";
+import tableSkeleton from "@/components/custom/skeleton/tableSkeleton";
 import {
   Table,
   TableBody,
@@ -23,23 +24,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useParams, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 type Props = {};
 
-// interface PaginatedProductsResponse {
-//   data: {
-//     data: ProductTypes.Product[];
-//   };
-// }
+const columns = ["image", "name", "description", "createdAt", "price"];
 
 function ProductList({}: Props) {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-
+  const { replace } = useRouter();
   const searchParams = useSearchParams();
+  const page = searchParams.get("page");
+  const parsedPage = parseInt(page || "1");
+  const pathname = usePathname();
 
-  const [formLoading, setFormLoading] = useState(false);
+  // useEffect(() => {
+  //   if (!page) {
+  //     replace(`${pathname}?page=1`);
+  //   }
+  // }, [page, replace, pathname]);
 
   const {
     data,
@@ -58,71 +63,100 @@ function ProductList({}: Props) {
         pageParam,
       }),
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => lastPage.nextPage,
-  });
-
-  const mutation = useMutation({
-    mutationFn: adminService.deleteProductById,
-    onSuccess: (response) => {
-      setFormLoading(false);
-      toast({
-        title: "Product Deleted.",
-        variant: "sucess",
-      });
-      queryClient.refetchQueries({
-        queryKey: ["products"],
-      });
+    getNextPageParam: (lastPage) => {
+      console.log(lastPage.nextPage,"lastPage.nextPage")
+      return lastPage.nextPage;
     },
-    onError: (error: CustomAxiosError) => {
-      setFormLoading(false);
-      const message = error.response?.data?.message || error.message;
-      toast({
-        title: message,
-        variant: "destructive",
-      });
+    getPreviousPageParam: (lastPage, allPages) => {
+      const currentPage = allPages[allPages.length - 1];
+      console.log(currentPage.prevPage,"currentPage.prevPage")
+      return currentPage.prevPage
     },
   });
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Could not load Products...</div>;
 
-  console.log(data?.pages, "data-data");
-  const search = searchParams.get("page");
-  console.log(search, "search");
+  const handleNextPage = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      const nextPage = parsedPage + 1;
+      replace(`${pathname}?page=${nextPage}`);
+      fetchNextPage();
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page || 0 > 1) {
+      const prevPage = parsedPage - 1;
+      replace(`${pathname}?page=${prevPage}`);
+      fetchPreviousPage();
+    }
+  };
+
+  console.log(data?.pages, "data?.pages");
+  console.log(parsedPage, "parsedPage");
 
   return (
     <div className="flex w-full flex-col gap-5">
       <PageTitle title="Product list" />
       <div className="table">
         <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableCaption>A list of products...</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Invoice</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
+              {columns.map((column, index) => (
+                <TableHead
+                  key={column}
+                  className={cn("capitalize", {
+                    "text-right": index == columns.length - 1,
+                  })}
+                >
+                  {column}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.pages[search]?.data.map((invoice) => {
-              console.log(invoice,"invoice")
+            {data?.pages[0]?.data.map((product) => {
               return (
-                <TableRow key={invoice.id}>
-                  <TableCell className="font-medium">{invoice.name}</TableCell>
-                  <TableCell>{invoice.description}</TableCell>
-                  <TableCell>{invoice.createdAt}</TableCell>
-                  <TableCell className="text-right">
-                    {invoice.price}
+                <TableRow key={product.id} className="h-10">
+                  <TableCell className="font-medium">
+                    <Image
+                      src={product.assets[0]}
+                      alt="product image"
+                      width={100}
+                      height={100}
+                    ></Image>
                   </TableCell>
+                  <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell>{product.description}</TableCell>
+                  <TableCell>{product.createdAt}</TableCell>
+                  <TableCell className="text-right">{product.price}</TableCell>
                 </TableRow>
-              )
+              );
             })}
           </TableBody>
           <TableFooter>
-            <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
-              <TableCell className="text-right">$2,500.00</TableCell>
+            <TableRow className="hover:bg-background">
+              <TableCell colSpan={3}></TableCell>
+              <TableCell colSpan={2}>
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="outline"
+                    onClick={handlePrevPage}
+                    disabled={parsedPage <= 1}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleNextPage}
+                    disabled={!hasNextPage}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </TableCell>
             </TableRow>
           </TableFooter>
         </Table>
@@ -132,48 +166,3 @@ function ProductList({}: Props) {
 }
 
 export default ProductList;
-
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
