@@ -1,5 +1,5 @@
 import PageTitle from "@/components/PageTitle";
-import { ProductForm } from "@/components/forms/productForm";
+import { ProductForm } from "@/components/custom/forms/productForm";
 import React from "react";
 
 type Props = {};
