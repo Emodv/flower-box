@@ -56,6 +56,7 @@ function ProductList({}: Props) {
     error,
     isError,
     isLoading,
+    isFetching,
   } = useInfiniteQuery({
     queryKey: ["paginatedProducts"],
     queryFn: ({ pageParam = 1 }) =>
@@ -64,13 +65,12 @@ function ProductList({}: Props) {
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      console.log(lastPage.nextPage,"lastPage.nextPage")
+      console.log(lastPage, "lastPage.nextPage");
       return lastPage.nextPage;
     },
     getPreviousPageParam: (lastPage, allPages) => {
-      const currentPage = allPages[allPages.length - 1];
-      console.log(currentPage.prevPage,"currentPage.prevPage")
-      return currentPage.prevPage
+      console.log(lastPage)
+      return lastPage.prevPage;
     },
   });
 
@@ -93,9 +93,6 @@ function ProductList({}: Props) {
     }
   };
 
-  console.log(data?.pages, "data?.pages");
-  console.log(parsedPage, "parsedPage");
-
   return (
     <div className="flex w-full flex-col gap-5">
       <PageTitle title="Product list" />
@@ -117,8 +114,12 @@ function ProductList({}: Props) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.pages[0]?.data.map((product) => {
-              return (
+            {isFetching ? (
+              <div>Loading...</div>
+            ) : isError ? (
+              <div>{error}</div>
+            ) : (
+              data.pages[0].data.map((product, index) => (
                 <TableRow key={product.id} className="h-10">
                   <TableCell className="font-medium">
                     <Image
@@ -133,8 +134,8 @@ function ProductList({}: Props) {
                   <TableCell>{product.createdAt}</TableCell>
                   <TableCell className="text-right">{product.price}</TableCell>
                 </TableRow>
-              );
-            })}
+              ))
+            )}
           </TableBody>
           <TableFooter>
             <TableRow className="hover:bg-background">
