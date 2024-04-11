@@ -55,7 +55,10 @@ export const fetchPaginatedProducts = async ({
 
   const nextPage = hasMore ? pageParam + 1 : undefined;
   const prevPage = pageParam > 1 ? pageParam - 1 : undefined;
-
+  console.log({
+    nextPage,
+    prevPage,
+  })
   return {
     data,
     nextPage,
