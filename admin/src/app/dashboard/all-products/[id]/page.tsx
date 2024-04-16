@@ -88,8 +88,8 @@ function ProductDetail({ params }: Props) {
             Slide {current} of {count}
           </div>
         </div>
-        <div className="table w-full">
-          <DataTable columns={columns as any} data={[product]} />
+        <div className="data">
+          
         </div>
       </div>
     </div>
