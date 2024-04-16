@@ -46,12 +46,12 @@ export default function SideNavbar({}: Props) {
       <Nav
         isCollapsed={mobileWidth ? true : isCollapsed}
         links={[
-          {
-            title: "Dashboard",
-            href: routes.dashboard,
-            icon: LayoutDashboard,
-            variant: "default",
-          },
+          // {
+          //   title: "Dashboard",
+          //   href: routes.dashboard,
+          //   icon: LayoutDashboard,
+          //   variant: "default",
+          // },
           {
             title: "Add Product",
             href: routes.add_product,
@@ -64,24 +64,24 @@ export default function SideNavbar({}: Props) {
             icon: List,
             variant: "ghost",
           },
-          {
-            title: "Users",
-            href: routes.users,
-            icon: UsersRound,
-            variant: "ghost",
-          },
+          // {
+          //   title: "Users",
+          //   href: routes.users,
+          //   icon: UsersRound,
+          //   variant: "ghost",
+          // },
           {
             title: "Orders",
             href: routes.orders,
             icon: ShoppingCart,
             variant: "ghost",
           },
-          {
-            title: "Settings",
-            href: routes.settings,
-            icon: Settings,
-            variant: "ghost",
-          },
+          // {
+          //   title: "Settings",
+          //   href: routes.settings,
+          //   icon: Settings,
+          //   variant: "ghost",
+          // },
         ]}
       />
     </div>
