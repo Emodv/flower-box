@@ -37,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <ShoppingCartIcon size={16}></ShoppingCartIcon>
               <span>cart</span>
               {cartItems.length > 0 && (
-                <span className="badge absolute right-[-15px] top-[-15px] flex h-5 items-center justify-center rounded-full bg-primary text-xs text-white min-w-8 shadow-md">
+                <span className="animate-ping-once badge absolute right-[-15px] top-[-15px] flex h-5 items-center justify-center rounded-full bg-primary text-xs text-white min-w-8 shadow-md">
                   {cartItems.length}
                 </span>
               )}

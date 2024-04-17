@@ -1,10 +1,11 @@
 import { Router } from "express";
-const productsRouter = Router();
 
 import { upload } from "../../config/multer.config";
-import adminController from "../../controller/products/products.controller";
+import * as adminController from "../../controller/products/products.controller";
 import { Roles } from "../../types/enums/rolesEnum";
 import isAuthorized from "../../middlewares/requireUser";
+
+const productsRouter = Router();
 
 productsRouter.post(
   "/add-product",

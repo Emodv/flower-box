@@ -8,7 +8,7 @@ import {
   TransformedProduct,
 } from "./types";
 
-async function createProductWithAssets({
+export async function createProductWithAssets({
   name,
   description,
   price,
@@ -49,7 +49,9 @@ async function createProductWithAssets({
   }
 }
 
-async function deleteProductWithRelations(productId: number): Promise<void> {
+export async function deleteProductWithRelations(
+  productId: number,
+): Promise<void> {
   try {
     await prisma.$transaction(async (prisma) => {
       await prisma.asset.deleteMany({ where: { productId } });
@@ -65,7 +67,7 @@ async function deleteProductWithRelations(productId: number): Promise<void> {
   }
 }
 
-async function getTopProductsByInteractions(): Promise<any> {
+export async function getTopProductsByInteractions(): Promise<any> {
   try {
     const topProducts = await prisma.product.findMany({
       include: {
@@ -94,7 +96,7 @@ async function getTopProductsByInteractions(): Promise<any> {
   }
 }
 
-async function getProducts({
+export async function getProducts({
   page,
   pageSize,
   category,
@@ -168,7 +170,7 @@ async function getProducts({
   }
 }
 
-async function getSingleProductDetails({
+export async function getSingleProductDetails({
   productId,
 }: {
   productId: string;
@@ -203,7 +205,9 @@ async function getSingleProductDetails({
   }
 }
 
-async function getProductAssetUrls(productId: number): Promise<string[]> {
+export async function getProductAssetUrls(
+  productId: number,
+): Promise<string[]> {
   try {
     const productAssets = await prisma.asset.findMany({
       where: { productId },
@@ -219,7 +223,7 @@ async function getProductAssetUrls(productId: number): Promise<string[]> {
 
 // fetch products by catogries
 
-async function getLimitedProductsByCategories(
+export async function getLimitedProductsByCategories(
   categoryNames: Category[],
 ): Promise<GroupedProducts> {
   try {
@@ -263,13 +267,3 @@ async function getLimitedProductsByCategories(
     throw new Error("Failed to fetch limited products by categories");
   }
 }
-
-export {
-  createProductWithAssets,
-  getProducts,
-  deleteProductWithRelations,
-  getProductAssetUrls,
-  getSingleProductDetails,
-  getLimitedProductsByCategories,
-  getTopProductsByInteractions,
-};
