@@ -19,19 +19,19 @@ class GoogleAuthController {
     response: Response,
   ): Promise<void> {
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${this.clientId}&redirect_uri=${this.redirectUri}&response_type=code&scope=email profile`;
-    response.redirect(authUrl);
+    response.status(ResponseStatus.Redirect).redirect(authUrl);
   }
 
   public async handleGoogleCallback(
     request: Request,
     response: Response,
   ): Promise<void> {
-    const code = request.query.code as string;
+    const authorizationCode = request.query.code as string;
     try {
-      const tokenResponse = await axios.post(
+      const authorizationToken = await axios.post(
         "https://oauth2.googleapis.com/token",
         {
-          code,
+          code: authorizationCode,
           client_id: this.clientId,
           client_secret: this.clientSecret,
           redirect_uri: this.redirectUri,
@@ -43,7 +43,7 @@ class GoogleAuthController {
         "https://www.googleapis.com/oauth2/v2/userinfo",
         {
           headers: {
-            Authorization: `Bearer ${tokenResponse.data.access_token}`,
+            Authorization: `Bearer ${authorizationToken.data.access_token}`,
           },
         },
       );
