@@ -5,18 +5,28 @@ import { useQuery } from "@tanstack/react-query";
 import * as adminService from "@/services/adminService";
 import PageTitle from "@/components/PageTitle";
 import PaginationTable from "@/components/custom/pagination/paginationTable";
-import { ProductTypes } from "@/types/types";
+import { ProductEnum, ProductTypes } from "@/types/types";
 import { usePagination } from "@/hooks/usePagination";
+import Image from "next/image";
+import TableSkeleton from "@/components/custom/skeleton/tableSkeleton";
 
 type Props = {};
 
 interface productDetails {
-  data: {
-    data: ProductTypes.Product;
-  };
+    data: ProductTypes.Product[];
 }
 
-const columns = ["image", "name", "description", "createdAt", "price"];
+const columns = [
+  ProductEnum.ProductColumns.Assets,
+  // ProductEnum.ProductColumns.Id,
+  ProductEnum.ProductColumns.Name,
+  ProductEnum.ProductColumns.Description,
+  ProductEnum.ProductColumns.Price,
+  ProductEnum.ProductColumns.CreatedAt,
+  // ProductEnum.ProductColumns.UpdatedAt,
+  // ProductEnum.ProductColumns.Tags,
+  // ProductEnum.ProductColumns.Categories,
+];
 
 function ProductList({}: Props) {
   const { currentPage } = usePagination();
@@ -27,19 +37,39 @@ function ProductList({}: Props) {
       queryFn: () => adminService.fetchPaginatedProducts({ page: currentPage }),
     });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Could not load Products...</div>;
+    if (isLoading)
+      return (
+        <div>
+          <PageTitle title="All Products" />
+          <TableSkeleton />
+        </div>
+      );
+  
+    if (isError) {
+      return (
+        <div className="container flex flex-col items-center justify-center py-20">
+          <Image
+            src="/noproductfound.png"
+            width={300}
+            height={300}
+            alt="empty no image"
+          ></Image>
+          <p className="mt-4 text-2xl">No Products found</p>
+          <p className="text-subtle text-lg">No Orders in Inventory yet...</p>
+        </div>
+      );
+    }
 
   return (
-    <div className="flex w-full flex-col gap-5">
+    <div className="">
       <PageTitle title="Product list" />
       <PaginationTable
         columns={columns}
-        // @ts-ignore
         data={data}
         isError={isError}
         isFetching={isFetching}
         error={error}
+        caption="list of products"
       />
     </div>
   );

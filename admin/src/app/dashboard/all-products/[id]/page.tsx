@@ -10,13 +10,27 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import PageTitle from "@/components/PageTitle";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchProduct } from "@/services";
 import { ProductTypes } from "@/types/types";
 import Image from "next/image";
-import { DataTable } from "@/components/DataTable";
-import { ColumnDef } from "@tanstack/react-table";
+import Tag from "@/components/custom/tags/tags";
+import { formatDate } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { deleteProductById } from "@/services/adminService";
+import { CustomAxiosError } from "@/services/api";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 interface singleProduct {
   data: {
@@ -27,7 +41,6 @@ interface singleProduct {
 type Props = {
   params: { id: string };
 };
-
 
 function ProductDetail({ params }: Props) {
   const [api, setApi] = useState<CarouselApi>();
@@ -52,6 +65,30 @@ function ProductDetail({ params }: Props) {
     });
   }, [api]);
 
+  const [formLoading, setFormLoading] = useState(true);
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: deleteProductById,
+    onSuccess: (response) => {
+      setFormLoading(false);
+      toast({
+        title: "Product deleted.",
+        variant: "sucess",
+      });
+      router.push("/dashboard/all-products?page=1");
+    },
+    onError: (error: CustomAxiosError) => {
+      setFormLoading(false);
+      const message = error.response?.data?.message || error.message;
+      toast({
+        title: message,
+        variant: "destructive",
+      });
+    },
+  });
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Could not load Products....</div>;
 
@@ -73,8 +110,10 @@ function ProductDetail({ params }: Props) {
                         src={_}
                         width={100}
                         height={100}
-                        alt={`preview`}
                         className="h-full w-full object-cover"
+                        alt={`Image of ${product.name}`}
+                        placeholder="blur"
+                        blurDataURL="/placeholderProduct.jpg"
                       />
                     </CardContent>
                   </Card>
@@ -88,8 +127,62 @@ function ProductDetail({ params }: Props) {
             Slide {current} of {count}
           </div>
         </div>
-        <div className="data">
-          
+        <div className="data divide-y-2">
+          <div className="flex justify-between py-4 text-2xl font-semibold">
+            <span>{product?.name}</span>
+            <span>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Delete</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Delete Product</DialogTitle>
+                    <DialogDescription>
+                      Are you sure you want to delete this product?
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4"></div>
+                  <DialogFooter>
+                    <Button
+                      type="submit"
+                      onClick={() => {
+                        if (!product?.id) {
+                          return;
+                        }
+                        mutation.mutate({
+                          productId: product?.id,
+                        });
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </span>
+          </div>
+          <div className="py-4">{product?.description}</div>
+          <div className="flex justify-between py-4">
+            <span>${product?.price}</span>
+            <span>{formatDate(product?.createdAt || "")}</span>
+          </div>
+          <div className="space-y-4 py-4">
+            <h2 className="font-semibold">Categories</h2>
+            <div className="flex flex-wrap gap-2">
+              {product?.categories?.map((item) => {
+                return <Tag key={item}>{item}</Tag>;
+              })}
+            </div>
+          </div>
+          <div className="space-y-4 py-4">
+            <h2 className="font-semibold">Tags</h2>
+            <div className="flex flex-wrap gap-2">
+              {product?.tags?.map((item) => {
+                return <Tag key={item}>{item}</Tag>;
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -97,27 +190,3 @@ function ProductDetail({ params }: Props) {
 }
 
 export default ProductDetail;
-
-const columns: ColumnDef<ProductTypes.Product>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
-  {
-    accessorKey: "name",
-    header: "Product title",
-  },
-  {
-    accessorKey: "price",
-    header: "Price",
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Created At",
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("createdAt"));
-      const formatted = date.toLocaleDateString();
-      return <div className="font-medium">{formatted}</div>;
-    },
-  },
-];

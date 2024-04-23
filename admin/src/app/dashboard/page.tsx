@@ -1,10 +1,8 @@
 /** @format */
 
 import PageTitle from "@/components/PageTitle";
-import Image from "next/image";
 import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
 import Card, { CardProps } from "@/components/Card";
-import { SalesProps } from "@/components/SalesCard";
 
 const cardData: CardProps[] = [
   {
