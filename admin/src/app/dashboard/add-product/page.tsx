@@ -8,9 +8,7 @@ function AddProduct({}: Props) {
   return (
     <div className="flex flex-col">
       <PageTitle title="Add Product" />
-      <div className="my-10">
-        <ProductForm></ProductForm>
-      </div>
+      <ProductForm></ProductForm>
     </div>
   );
 }
