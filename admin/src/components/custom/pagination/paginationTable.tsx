@@ -1,15 +1,6 @@
 "use client";
 
-import React from "react";
-import { cn, formatDate, truncateString } from "@/lib/utils";
-import Image from "next/image";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-} from "@/components/ui/pagination";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -20,149 +11,162 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { ProductTypes } from "@/types/types";
-import { usePagination } from "@/hooks/usePagination";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import Image from "next/image";
+import PaginationControls from "./paginationControl";
+import {
+  ProductTypes,
+  orderType,
+  routes,
+  transactionType,
+} from "@/types/types";
 import TableSkeleton from "../skeleton/tableSkeleton";
-import { useRouter } from "next/navigation";
+import { cn, formatDate } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { useMarkOrderComplete } from "@/services/client/orders";
 
 interface Props {
   columns: string[];
   data?: {
-    data: ProductTypes.Product[];
+    data:
+      | ProductTypes.Product[]
+      | transactionType.Transaction[]
+      | orderType.order[]
+      | undefined;
     prevPage?: number;
     nextPage?: number;
   };
   isError: boolean;
-  isFetching: boolean;
   error: any;
+  isFetching: boolean;
+  caption: string;
 }
 
-function PaginationTable({ columns, data, isError, error, isFetching }: Props) {
+const PaginationTable = ({
+  columns,
+  data,
+  isError,
+  error,
+  isFetching,
+  caption,
+}: Props) => {
+  const pathName = usePathname();
   const router = useRouter();
-  const { currentPage, setPage } = usePagination();
+  const [isOpen, setIsOpen] = useState(false);
+  const [mutateId, setMutateId] = useState<boolean | number>(false);
+
+  const { mutate: markOrderCompleteMut } = useMarkOrderComplete();
+
+  if (isFetching) return <TableSkeleton />;
+  if (isError) return <div>Error: {error?.message}</div>;
 
   return (
-    <div className="table-responsive">
-      {isFetching ? (
-        <TableSkeleton />
-      ) : (
-        <Table>
-          <TableCaption>A list of products</TableCaption>
-          <TableHeader>
-            <TableRow>
-              {columns.map((column, index) => (
-                <TableHead
-                  key={column}
-                  className={cn("capitalize", {
-                    "text-right": index === columns.length - 1,
+    <div className="table-responsive mt-4">
+      <Table>
+        <TableCaption>{caption}</TableCaption>
+        <TableHeader>
+          <TableRow>
+            {columns.map((column, index) => (
+              <TableHead
+                key={column}
+                className={cn("capitalize", {
+                  "text-right": index === columns.length - 1,
+                })}
+              >
+                {column}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data?.data?.map((product) => (
+            <TableRow key={product.id} className="h-10">
+              {columns.map((col, index) => (
+                <TableCell
+                  onClick={() => {
+                    if (pathName === routes.all_products) {
+                      router.push(`${routes.all_products}/${product.id}`);
+                    }
+                    if (pathName === routes.orders) {
+                      setIsOpen(true);
+                      setMutateId(product?.id);
+                    }
+                  }}
+                  key={`${product.id}`}
+                  className={cn("", {
+                    "text-end": index + 1 === columns.length,
                   })}
                 >
-                  {column}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody className="w-full">
-            {isError ? (
-              <div>Error: {error?.message}</div>
-            ) : (
-              data?.data.map((product) => (
-                <TableRow
-                  key={product.id}
-                  className="h-10"
-                  onClick={() =>
-                    router.push(`/dashboard/all-products/${product.id}`)
-                  }
-                >
-                  <TableCell className="font-medium">
+                  {col === "assets" ? (
                     <Image
-                      src={product.assets[0]}
-                      alt="product image"
+                      // @ts-ignore
+                      // src={product?.assets[0]}
+                      src="/placeholderProduct.jpg"
                       width={100}
                       height={100}
+                      // @ts-ignore
+                      alt={`Image of ${product.name}`}
+                      placeholder="blur"
+                      blurDataURL="/placeholderProduct.jpg"
                     />
-                  </TableCell>
-                  <TableCell className="font-medium">{product.name}</TableCell>
-                  {/* <TableCell >{truncateString(product.description, 100)}</TableCell> */}
-                  <TableCell >{product.description}</TableCell>
-                  <TableCell>{formatDate(product.createdAt)}</TableCell>
-                  <TableCell className="text-right">{product.price}</TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-          <TableFooter>
-            <TableRow className="hover:bg-background">
-              <TableCell colSpan={5}>
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <Button
-                        // @ts-ignore
-                        onClick={() => setPage(data?.prevPage)}
-                        aria-label="Go to next page"
-                        size="default"
-                        className={cn("gap-1 pr-2.5")}
-                        disabled={!data?.prevPage}
-                        variant="ghost"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                        <span>Previous</span>
-                      </Button>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <Button
-                        // @ts-ignore
-                        onClick={() => setPage(data?.prevPage)}
-                        aria-label="Go to next page"
-                        size="default"
-                        className={cn("gap-1 pr-2.5")}
-                        disabled={!data?.prevPage}
-                        variant="ghost"
-                      >
-                        {currentPage - 1}
-                      </Button>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink isActive>{currentPage}</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <Button
-                        // @ts-ignore
-                        onClick={() => setPage(data.nextPage)}
-                        aria-label="Go to next page"
-                        size="default"
-                        className={cn("gap-1 pr-2.5")}
-                        disabled={!data?.nextPage}
-                        variant="ghost"
-                      >
-                        {currentPage + 1}
-                      </Button>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <Button
-                        // @ts-ignore
-                        onClick={() => setPage(data.nextPage)}
-                        aria-label="Go to next page"
-                        size="default"
-                        className={cn("gap-1 pr-2.5")}
-                        disabled={!data?.nextPage}
-                        variant="ghost"
-                      >
-                        <span>Next</span>
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </TableCell>
+                  ) : col === "createdAt" || col === "updatedAt" ? (
+                    // @ts-ignore
+                    formatDate(product[col])
+                  ) : (
+                    // @ts-ignore
+                    product[col]
+                  )}
+                </TableCell>
+              ))}
             </TableRow>
-          </TableFooter>
-        </Table>
-      )}
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={5}>
+              <PaginationControls
+                prevPage={data?.prevPage}
+                nextPage={data?.nextPage}
+              />
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Delivered.</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to mark this order as Delivered?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4"></div>
+          <DialogFooter>
+            <Button
+              type="submit"
+              onClick={() => {
+                if (!mutateId) {
+                  return;
+                }
+                markOrderCompleteMut({ orderId: mutateId as number });
+                setIsOpen(false);
+              }}
+            >
+              Mark as delivered
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-}
+};
 
 export default PaginationTable;
