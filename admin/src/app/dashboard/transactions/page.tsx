@@ -2,21 +2,22 @@
 
 import React from "react";
 import PageTitle from "@/components/PageTitle";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import PaginationTable from "@/components/custom/pagination/paginationTable";
-import { orderEnum, orderType } from "@/types/types";
+import { transactionEnum, transactionType } from "@/types/types";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import TableSkeleton from "@/components/custom/skeleton/tableSkeleton";
 import { usePathname, useRouter } from "next/navigation";
-import { useOrdersDetails } from "@/services/client/orders";
-import { statusOptions } from "@/types/order/orderType";
+import { useTransactionDetails } from "@/services/client/orders";
+import { statusOptionsT } from "@/types/transactions/transactionType";
 
 const columns = [
-  orderEnum.orderEnum.id,
-  orderEnum.orderEnum.status,
-  orderEnum.orderEnum.createdAt,
-  orderEnum.orderEnum.updatedAt,
-  orderEnum.orderEnum.address,
+  // transactionEnum.TransactionEnum.id,
+  transactionEnum.TransactionEnum.orderId,
+  transactionEnum.TransactionEnum.amount,
+  transactionEnum.TransactionEnum.status,
+  transactionEnum.TransactionEnum.createdAt,
 ];
 
 export default function OrdersPage() {
@@ -27,12 +28,12 @@ export default function OrdersPage() {
     query: { isLoading, isError, data, isFetching, error },
     view: { view, setView },
     currentPage,
-  } = useOrdersDetails();
+  } = useTransactionDetails();
 
   if (isLoading)
     return (
       <div>
-        <PageTitle title="Orders" />
+        <PageTitle title="Transactions" />
         <TableSkeleton />
       </div>
     );
@@ -46,20 +47,23 @@ export default function OrdersPage() {
           height={300}
           alt="empty no image"
         ></Image>
-        <p className="mt-4 text-2xl">No Orders found</p>
-        <p className="text-subtle text-lg">No Orders in Inventory yet...</p>
+        <p className="mt-4 text-2xl">No Transactions found</p>
+        <p className="text-subtle text-lg">
+          No Transactions in Inventory yet...
+        </p>
       </div>
     );
   }
 
-  const { orders, hasMore } = data?.data as orderType.Orders;
+  const { transactions, hasMore } = data?.data as transactionType.Transactions;
+
   const nextPage = hasMore ? currentPage + 1 : undefined;
   const prevPage = currentPage > 1 ? currentPage - 1 : undefined;
 
   return (
     <div className="">
       <div className="flex justify-between">
-        <PageTitle title="Orders" />
+        <PageTitle title="Transactions" />
         <Tabs
           value={view}
           onValueChange={(value) => {
@@ -69,15 +73,15 @@ export default function OrdersPage() {
           className="mb-4 w-[400px] dark:bg-primary-foreground"
         >
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value={statusOptions.PENDING}>Pending</TabsTrigger>
-            <TabsTrigger value={statusOptions.FAILED}>Delivered</TabsTrigger>
+            <TabsTrigger value={statusOptionsT.SUCCESS}>Success</TabsTrigger>
+            <TabsTrigger value={statusOptionsT.FAILED}>Failed</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
       <PaginationTable
         columns={columns}
         data={{
-          data: orders,
+          data: transactions,
           nextPage,
           prevPage,
         }}

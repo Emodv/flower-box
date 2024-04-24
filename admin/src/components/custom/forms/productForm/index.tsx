@@ -39,7 +39,7 @@ export function ProductForm() {
   });
   const { toast } = useToast();
 
-  const router = useRouter();
+  // const router = useRouter();
   // const pathname = usePathname();
 
   const form = useForm<FormSchemaType>({
@@ -58,7 +58,17 @@ export function ProductForm() {
 
   // mutation ---
   const mutation = useMutation({
-    mutationFn: uploadProduct,
+    mutationFn: (values) =>
+      uploadProduct(values, {
+        onFileUpload: (progressEvent) => {
+          console.log(progressEvent.loaded)
+          console.log(progressEvent.total)
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+          console.log(`Upload progress: ${percentCompleted}%`);
+        },
+      }),
     onSuccess: (response) => {
       setFormLoading(false);
       toast({
@@ -70,7 +80,7 @@ export function ProductForm() {
     onError: (error: any) => {
       console.log(error, "errors");
       toast({
-        title: "errorMessage",
+        title: "Error",
         description: "There was a problem with your request.",
         variant: "destructive",
       });
@@ -159,10 +169,7 @@ export function ProductForm() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto max-w-[900px] space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="">
         <FormField
           name="productImages"
           control={control}
@@ -307,7 +314,7 @@ export function ProductForm() {
         />
         {/* <div className="flex justify-"> */}
 
-        <Button type="submit" disabled={isFormLoading} className="w-52 bg-darkbg">
+        <Button type="submit" disabled={isFormLoading} className="mt-4 w-52">
           {isFormLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Submit
         </Button>
