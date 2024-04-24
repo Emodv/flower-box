@@ -18,58 +18,30 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { signInFormSchema } from "@/schema/zod";
-import { loginHandler } from "@/services";
-import { CustomAxiosError } from "@/services/api";
+import { useSignInMutation } from "@/services/client/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 type FormSchemaType = z.infer<typeof signInFormSchema>;
 
 export default function LoginAccount() {
-  const [isFormLoading, setFormLoading] = useState(false);
-  const { toast } = useToast();
-
-  const router = useRouter();
+  const {
+    mutation: { mutate: signInMutate },
+    formStatus: { setFormLoading, isFormLoading },
+  } = useSignInMutation();
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(signInFormSchema),
     shouldFocusError: true,
   });
 
-  // mutation ---
-  const mutation = useMutation({
-    mutationFn: loginHandler,
-    onSuccess: (response) => {
-      setFormLoading(false);
-      toast({
-        title: "Log in Sucess",
-        variant: "sucess",
-      });
-      router.push("/dashboard");
-    },
-    onError: (error: CustomAxiosError) => {
-      setFormLoading(false);
-      const message = error.response?.data?.message || error.message;
-      toast({
-        title: message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  // submit handler ---
   const onSubmit = async (values: FormSchemaType) => {
     setFormLoading(true);
-    mutation.mutate({
+    signInMutate({
       ...values,
     });
   };
