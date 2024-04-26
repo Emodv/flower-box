@@ -1,4 +1,4 @@
-// import * as path from "path";
+import * as path from "path";
 import cors from "cors";
 import express from "express";
 import deserializeUser from "./middlewares/deserializeUsers";
@@ -22,7 +22,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
-// app.use("/static", express.static(path.join(__dirname, "public")));
+app.use("/static", express.static(path.join(__dirname, "public")));
 
 app.use("/v1", Api1);
 

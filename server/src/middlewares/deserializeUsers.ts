@@ -1,7 +1,8 @@
+import "express";
+
 import { NextFunction, Request, Response } from "express";
 import { signJWT, verifyJWT } from "../utils/jwt.utils";
-
-import "express";
+import { environment } from "../types/global";
 
 interface JWTPayload {
   email: string;
@@ -16,7 +17,7 @@ declare module "express-serve-static-core" {
 }
 
 const ACCESS_TOKEN_MAX_AGE = 3600000 * 12; // 12 hour in milliseconds
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
+const IS_PRODUCTION = process.env.NODE_ENV === environment.PRODUCTION;
 
 async function deserializeUser(
   request: Request,
