@@ -10,7 +10,7 @@ function sayHello(request: Request, response: Response): void {
   console.log(COOKIE_CLIENT, "COOKIE_CLIENT");
 
   response.status(200).json({
-    message: "hello10",
+    message: "hello100",
     data: {
       DATABASE_URL,
       CLIENT_SERVER_2,
