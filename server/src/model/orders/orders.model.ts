@@ -12,6 +12,79 @@ interface newOrderI extends Order {
   transaction: Transaction | null;
 }
 
+interface OrderQueryParams {
+  page: number;
+  pageSize: number;
+  status: OrderStatus;
+}
+
+interface PaginatedOrderResponse {
+  orders: Order[];
+  hasMore: boolean;
+}
+
+export async function getOrders({
+  page,
+  pageSize,
+  status,
+}: OrderQueryParams): Promise<PaginatedOrderResponse> {
+  try {
+    const skip = (page - 1) * pageSize;
+
+    const orders = await prisma.order.findMany({
+      where: { status: status },
+      skip,
+      take: pageSize,
+      orderBy: { createdAt: "desc" },
+    });
+
+    const totalOrders = await prisma.order.count({
+      where: { status: status },
+    });
+
+    return {
+      orders,
+      hasMore: skip + pageSize < totalOrders,
+    };
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    throw new Error("Failed to fetch orders");
+  }
+}
+
+export async function completeOrder({
+  orderId,
+}: {
+  orderId: number;
+}): Promise<void> {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: { status: true },
+    });
+
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    if (order.status !== OrderStatus.PENDING) {
+      throw new Error(
+        "Order is not in a state that can be marked as completed",
+      );
+    }
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status: OrderStatus.COMPLETED },
+    });
+
+    console.log(`Order ${orderId} has been marked as completed.`);
+  } catch (error) {
+    console.error("Error completing order:", error);
+    throw new Error("Failed to complete order");
+  }
+}
+
 async function createOrder({
   address,
   orderItems,

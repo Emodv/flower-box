@@ -6,3 +6,8 @@ export type User = {
   updatedAt: Date;
   role: string;
 };
+
+export enum environment {
+  PRODUCTION = "production",
+  DEVELOPMENT = "development",
+}

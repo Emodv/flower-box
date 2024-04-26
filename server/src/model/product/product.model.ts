@@ -148,6 +148,9 @@ export async function getProducts({
           categories: true,
           assets: true,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       }),
       prisma.product.count({ where: whereClause }),
     ]);

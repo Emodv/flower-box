@@ -91,7 +91,6 @@ export async function adminLoginHandler(request: Request, response: Response) {
     const validatedData = signUpLoginSchema.parse(request.body);
     const { email, password } = validatedData;
 
-
     const user = await getUser(email);
 
     if (!user || !comparePassword(password, user.password)) {
@@ -125,7 +124,6 @@ export async function adminLoginHandler(request: Request, response: Response) {
 
 export async function logoutHandler(request: Request, response: Response) {
   try {
-
     const LOGOUT_COOKIE_OPTIONS = {
       httpOnly: true,
       secure: IS_PRODUCTION,
