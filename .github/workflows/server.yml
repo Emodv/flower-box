@@ -37,7 +37,9 @@ jobs:
           npx prisma generate
 
       - name: build app    
-        run: npm run build
+        run: |
+          cd server
+          npm run build
         env: 
           NODE_ENV: production
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
