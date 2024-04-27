@@ -22,7 +22,7 @@ function JoinUs({}: Props) {
           </h1>
           <div className="mt-6 flex">
             <Input
-              className="text-gray-600 h-full w-96 rounded-none rounded-l-2xl text-xs tracking-wider outline-none placeholder:text-gray-400"
+              className="text-gray-600 h-full w-48 md:w-96 rounded-none rounded-l-2xl text-xs tracking-wider outline-none placeholder:text-gray-400"
               placeholder="Email Address"
             ></Input>
             <Button className="rounded-none rounded-r-2xl bg-primary-subtle px-8 py-7 text-xs font-light uppercase tracking-widest">

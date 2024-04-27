@@ -86,14 +86,14 @@ function SearchBar({}: Props) {
   return (
     <div className="container relative">
       <div className="slider-container bg-[#fffcfc] pt-4">
-        <div className="m-auto mb-4 w-[600px]">
+        <div className="m-auto mb-4 w-80 md:w-[600px]">
           <div className="relative">
             <form onSubmit={searchStringHandler}>
               <Input
                 onChange={(e) => setSearchString(e.target.value)}
                 type="search"
                 id="default-search"
-                className="text-sm block h-14 w-full rounded-full border-gray-300 p-4 ps-10 text-gray-900 shadow-md"
+                className="text-sm block h-14 w-full rounded-full border-gray-300 p-4 ps-4 md:ps-10 text-gray-900 shadow-md"
                 placeholder="Search by Name, Category or Tags..."
                 required
               />

@@ -29,7 +29,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </h1>
           </Link>
           <div className="tagline flex items-center justify-center gap-4">
+            <span className="hidden md:block">
             From Our Garden to Your Heart.
+            </span>
             <Link
               href="/category/cart"
               className="relative flex items-center justify-center gap-2 rounded-sm border-2 px-2 py-[4px]"

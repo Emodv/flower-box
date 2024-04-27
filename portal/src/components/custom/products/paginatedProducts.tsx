@@ -35,7 +35,7 @@ function PaginatedProducts() {
 
   if (status === "pending") {
     return (
-      <div className="container flex justify-between flex-wrap gap-4">
+      <div className="container flex justify-between flex-wrap gap-2 px-10">
         {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => {
           return <SkeletonCard key={item}></SkeletonCard>;
         })}
@@ -50,7 +50,7 @@ function PaginatedProducts() {
           src="/noproductfound.png"
           width={300}
           height={300}
-          alt="empty cart image"
+          alt="empty no image"
         ></Image>
         <p className="mt-4 text-2xl">No products found...</p>
         <p className="text-lg text-subtle">
