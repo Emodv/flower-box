@@ -57,13 +57,13 @@ export default function LoginAccount() {
           className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex h-screen w-screen items-center justify-center space-y-6"
           >
-            <Card className="min-w-[400px]">
+            <Card className="w-[350px] md:w-[400px]">
               <CardHeader className="space-y-1">
                 <CardTitle className="text-center text-2xl">Sign in</CardTitle>
                 <CardDescription className="text-center">
