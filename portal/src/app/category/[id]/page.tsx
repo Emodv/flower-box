@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import useStore from "@/state/store";
 import useInteraction from "@/customHooks/useInteractions";
+import Slider from "react-slick";
 
 interface singleProduct {
   data: {
@@ -37,10 +38,45 @@ type Props = {
   params: { id: string };
 };
 
+const settings = {
+  className: "center custom-slider",
+  infinite: true,
+  centerPadding: "60px",
+  slidesToShow: 4,
+  swipeToSlide: true,
+  arrows: false,
+  responsive: [
+    {
+      breakpoint: 1200,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+        infinite: true,
+        dots: true,
+      },
+    },
+    {
+      breakpoint: 1000,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2,
+        initialSlide: 2,
+      },
+    },
+    {
+      breakpoint: 570,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      },
+    },
+  ],
+};
+
 function Page({ params }: Props) {
   const setCartItem = useStore((state) => state.setCartItem);
-  
-  useInteraction(params.id)
+
+  useInteraction(params.id);
 
   const { data, isLoading, isError, error } = useQuery<singleProduct>({
     queryKey: ["product"],
@@ -48,7 +84,8 @@ function Page({ params }: Props) {
   });
 
   if (isLoading) return <div className="container">Loading...</div>;
-  if (isError) return <div className="container">Could not load Products....</div>;
+  if (isError)
+    return <div className="container">Could not load Products....</div>;
 
   const product = data?.data.data as ProductTypes.Product;
 
@@ -76,10 +113,11 @@ function Page({ params }: Props) {
         </Breadcrumb>
       </div>
 
-      <div className="carousal relative flex w-full gap-2">
+      <div className="carousal relative hidden w-full flex-col gap-2 md:flex md:flex-row">
         <div className="relative h-[550px] flex-1 overflow-hidden rounded-l-lg">
           <Image
-            src={product?.assets[0]}
+            // src={product?.assets[0]}
+            src={"/placeholderProduct.jpg"}
             alt="asdf"
             layout="fill"
             objectFit="cover"
@@ -109,8 +147,25 @@ function Page({ params }: Props) {
           })}
         </div>
       </div>
+      <div className="block w-full md:hidden">
+        <Slider {...settings}>
+          {product.assets.map((item) => {
+            return (
+              <Image
+                key={item + product.name}
+                width={100}
+                height={100}
+                src={item}
+                alt={`flowerbox product picture`}
+                placeholder="blur"
+                blurDataURL="/placeholderProduct.jpg"
+              />
+            );
+          })}
+        </Slider>
+      </div>
       {/* <Separator className="mt-10 w-full border-t-[1px] border-gray-300" /> */}
-      <div className="mt-10 flex gap-2">
+      <div className="mt-10 flex flex-col-reverse gap-2 md:flex-row">
         <div className="flex-1">
           <div className="pb-10">
             <p className="text-subtle">{product?.description}</p>
@@ -156,7 +211,7 @@ function Page({ params }: Props) {
             </div>
           </div>
         </div>
-        <div className="flex-1 px-10">
+        <div className="flex-1 pb-4 md:px-10 md:pb-0">
           <Button
             onClick={() =>
               setCartItem({

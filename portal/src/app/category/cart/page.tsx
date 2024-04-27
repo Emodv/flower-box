@@ -97,68 +97,71 @@ function Page({}: Props) {
       </div>
     );
   }
-  console.log(promo);
 
   return (
-    <div className="container flex gap-4 py-20">
+    <div className="container flex flex-col gap-4 py-20 lg:flex-row">
       <div className="flex-1 space-y-4">
         {cartItems?.map((item, index) => {
           return (
             <div
               key={item.productId}
               className={cn(
-                "flex h-24 items-center justify-between border-t-2 border-gray-100 px-4",
+                "flex flex-col sm:flex-row py-2 items-center justify-between border-t-2 border-gray-100 px-4",
                 {
                   "border-b-2": index + 1 === cartItems.length,
                 },
               )}
             >
-              <Image
-                src={item.img}
-                width={50}
-                height={50}
-                alt="cartItem"
-              ></Image>
-              <h4 className="w-56 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm uppercase">
-                {item.name}
-              </h4>
-              <div className="flex items-center justify-center">
-                <Button
-                  variant="ghost"
-                  className="text-subtle"
-                  onClick={() =>
-                    updateCartItemQuantity({
-                      action: cartQuantityUpdate.subtract,
-                      id: item.productId,
-                    })
-                  }
-                >
-                  <Minus size={16} />
-                </Button>
-                <div className="flex w-10 items-center justify-center rounded-lg border-2 ">
-                  {item.quantity}
+              <div className="flex items-center space-x-3 w-full">
+                <Image
+                  src={item.img}
+                  width={50}
+                  height={50}
+                  alt="cartItem"
+                ></Image>
+                <h4 className="w-56 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm uppercase">
+                  {item.name}
+                </h4>
+              </div>
+              <div className="flex items-center w-full justify-between mt-4">
+                <div className="flex items-center justify-center">
+                  <Button
+                    variant="ghost"
+                    className="text-subtle"
+                    onClick={() =>
+                      updateCartItemQuantity({
+                        action: cartQuantityUpdate.subtract,
+                        id: item.productId,
+                      })
+                    }
+                  >
+                    <Minus size={16} />
+                  </Button>
+                  <div className="flex w-10 items-center justify-center rounded-lg border-2 ">
+                    {item.quantity}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    className="text-subtle"
+                    onClick={() =>
+                      updateCartItemQuantity({
+                        action: cartQuantityUpdate.add,
+                        id: item.productId,
+                      })
+                    }
+                  >
+                    <Plus size={16} />
+                  </Button>
                 </div>
+                <div className="w-10">${item.price * item.quantity}</div>
                 <Button
                   variant="ghost"
                   className="text-subtle"
-                  onClick={() =>
-                    updateCartItemQuantity({
-                      action: cartQuantityUpdate.add,
-                      id: item.productId,
-                    })
-                  }
+                  onClick={() => removeCartItem(item.productId)}
                 >
-                  <Plus size={16} />
+                  <X size={16} />
                 </Button>
               </div>
-              <div className="w-10">${item.price}</div>
-              <Button
-                variant="ghost"
-                className="text-subtle"
-                onClick={() => removeCartItem(item.productId)}
-              >
-                <X size={16} />
-              </Button>
             </div>
           );
         })}
@@ -189,8 +192,8 @@ function Page({}: Props) {
         </div>
       </div>
       <div className="sticky top-20 flex flex-1 flex-col items-end gap-2">
-        <div>
-          <div className="w-96 rounded-t bg-gray-100 p-10">
+        <div className="w-full lg:w-96">
+          <div className="rounded-t bg-gray-100 p-10">
             <h1 className="text-2xl font-semibold">Summary</h1>
             <div className="mt-10 space-y-10">
               <div className="flex items-center justify-between">
@@ -256,7 +259,7 @@ function Page({}: Props) {
             <div className="h-4 w-4 rounded-full bg-white"></div>
             <div className="h-4 w-4 rounded-full bg-white"></div>
           </div>
-          <div className="flex w-96 items-center justify-between rounded-b bg-gray-100 px-10 py-6">
+          <div className="flex items-center justify-between rounded-b bg-gray-100 px-10 py-6">
             <p className="text-subtle">Subtotal</p>
             <p className="text-xl font-semibold">
               $

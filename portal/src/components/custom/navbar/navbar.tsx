@@ -30,13 +30,13 @@ const links = [
 
 function Navbar({}: Props) {
   return (
-    <div className="container flex items-center justify-between pt-10">
+    <div className="container flex items-center justify-between pt-10 px-4 md:px-0">
       <div className="flex space-x-10">
         <div className="logo">
           <Image src="/logo.png" height={60} width={140} alt="flowerbox" />
         </div>
         <nav>
-          <ul className="mt-2 flex h-full items-center space-x-4 font-light">
+          <ul className="mt-2 hidden h-full items-center space-x-4 font-light md:flex">
             {links.map((link) => {
               return (
                 <li key={link.href}>
@@ -53,7 +53,7 @@ function Navbar({}: Props) {
           href="/category"
           className={cn(
             playfair.className,
-            "shadow-full rounded-lg bg-primary-subtle px-6 py-4 text-base text-white",
+            "rounded-lg bg-primary-subtle px-6 py-4 text-base text-white shadow-full",
           )}
         >
           Get Started

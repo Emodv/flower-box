@@ -8,14 +8,14 @@ type Props = {};
 function Header({}: Props) {
   return (
     <div className="my-14 bg-[#F3F3F3]  pt-10">
-      <div className="container flex">
+      <div className="container flex  flex-col md:flex-row">
         <div className="text flex-1 pt-8">
           <h2 className={cn(playfair.className, "text-[60px] leading-[70px]")}>
             Send <span className="text-[#FFB6C1]">flowers</span> like <br />
             you mean it.
           </h2>
           <p
-            className={cn(lora.className, "text-subtle mt-8 text-lg leading-8")}
+            className={cn(lora.className, "mt-8 text-lg leading-8 text-subtle")}
           >
             Where flowers are our inspiration to create lasting memories. <br />{" "}
             Whatever the occasion, our flowers will make it special cursus{" "}

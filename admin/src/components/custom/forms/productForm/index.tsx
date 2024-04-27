@@ -58,17 +58,7 @@ export function ProductForm() {
 
   // mutation ---
   const mutation = useMutation({
-    mutationFn: (values) =>
-      uploadProduct(values, {
-        onFileUpload: (progressEvent) => {
-          console.log(progressEvent.loaded)
-          console.log(progressEvent.total)
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total,
-          );
-          console.log(`Upload progress: ${percentCompleted}%`);
-        },
-      }),
+    mutationFn: uploadProduct,
     onSuccess: (response) => {
       setFormLoading(false);
       toast({

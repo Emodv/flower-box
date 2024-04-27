@@ -1,25 +1,34 @@
 import Instance from "@/services/api";
+// Define the interface for the input values and options
+interface UploadProductParams {
+  values: {
+    productName: string;
+    productId: string;
+    description: string;
+    price: string;
+    categories: string[];
+    tags: string[];
+    productImages?: File[];
+  };
+  options: {
+    onFileUpload: (data: any) => void;
+  };
+}
 
-export const uploadProduct = async ({
-  productName,
-  productId,
-  description,
-  price,
-  categories,
-  tags,
-  productImages,
-}: {
-  productName: string;
-  productId: string;
-  description: string;
-  price: string;
-  categories: string[];
-  tags: string[];
-  productImages?: any;
-}) => {
+export const uploadProduct = async (
+  {
+    productName,
+    productId,
+    description,
+    price,
+    categories,
+    tags,
+    productImages,
+  }: UploadProductParams['values'],
+) => {
   const formData = new FormData();
 
-  productImages.forEach((file: File) => formData.append("files", file));
+  productImages?.forEach((file) => formData.append("files", file));
 
   formData.append("productName", productName);
   formData.append("productId", productId);
@@ -37,6 +46,7 @@ export const uploadProduct = async ({
     },
   });
 };
+
 
 export function loginHandler(userData: { email: string; password: string }) {
   return Instance.post(`/authentication/admin/login`, userData, {});
@@ -60,13 +70,50 @@ export const fetchPaginatedProducts = async ({
     data,
     nextPage,
     prevPage,
-    totalCount
+    totalCount,
   };
+};
+
+export const fetchPaginatedTransactions = async ({
+  page = 1,
+  view,
+}: {
+  page: number;
+  view: string | null;
+}) => {
+  const pageSize = 15;
+  let queryString = `/transactions/paginated-transactions?page=${page}&pageSize=${pageSize}&status=${view}`;
+
+  return Instance.get(queryString);
+};
+
+export const fetchPaginatedOrders = async ({
+  page = 1,
+  view,
+}: {
+  page: number;
+  view: string | null;
+}) => {
+  const pageSize = 15;
+  let queryString = `/orders/paginated-orders?page=${page}&pageSize=${pageSize}&status=${view}`;
+
+  return Instance.get(queryString);
 };
 
 export function deleteProductById({ productId }: { productId: number }) {
   const url = `/products/delete-product/${productId}`;
 
+  return Instance.get(url);
+}
+
+export function markOrderComplete({ orderId }: { orderId: number }) {
+  const url = `/orders/mark-order-complete?orderid=${orderId}`;
+
+  return Instance.get(url);
+}
+
+export function logoutHandler() {
+  const url = `/authentication/logout`;
   return Instance.get(url);
 }
 
