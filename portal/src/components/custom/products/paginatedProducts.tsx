@@ -31,7 +31,7 @@ function PaginatedProducts() {
   });
 
   console.log(data?.pages, "data");
-  console.log(searchString, category, "store");
+  console.log(searchString, category, "store.");
 
   if (status === "pending") {
     return (
