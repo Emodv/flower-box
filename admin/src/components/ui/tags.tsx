@@ -34,14 +34,14 @@ const TagInput: React.FC<TagInputProps> = ({
   };
 
   return (
-    <div className="relative w-full sm:w-[50%]">
+    <div className="relative w-full">
       <Label
         htmlFor="tags"
         className="text-md font-normal text-black dark:text-white"
       >
         {label}
       </Label>
-      <div className="mt-2 flex h-12 gap-2 overflow-hidden overflow-x-auto rounded border border-gray-200 dark:border-gray-800 p-2">
+      <div className="mt-2 flex flex-wrap min-h-12 gap-2 overflow-hidden overflow-x-auto rounded border border-gray-200 dark:border-gray-800 p-2">
         {selectedTags.map((tag, index) => (
           <div
             key={index}
