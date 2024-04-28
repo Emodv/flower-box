@@ -116,8 +116,8 @@ function Page({ params }: Props) {
       <div className="carousal relative hidden w-full flex-col gap-2 md:flex md:flex-row">
         <div className="relative h-[550px] flex-1 overflow-hidden rounded-l-lg">
           <Image
-            // src={product?.assets[0]}
-            src={"/placeholderProduct.jpg"}
+            src={product?.assets[0]}
+            // src={"/placeholderProduct.jpg"}
             alt="asdf"
             layout="fill"
             objectFit="cover"
