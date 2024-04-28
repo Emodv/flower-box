@@ -108,8 +108,8 @@ const PaginationTable = ({
                   {col === "assets" ? (
                     <Image
                       // @ts-ignore
-                      // src={product?.assets[0]}
-                      src="/placeholderProduct.jpg"
+                      src={product?.assets[0]}
+                      // src="/placeholderProduct.jpg"
                       width={100}
                       height={100}
                       // @ts-ignore

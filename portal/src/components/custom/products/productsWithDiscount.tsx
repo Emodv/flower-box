@@ -59,10 +59,10 @@ const TopProducts = () => {
     refetchOnWindowFocus: false,
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div className="container">Loading...</div>;
   if (isError)
     return (
-      <div>
+      <div className="container">
         Error: {error instanceof Error ? error.message : "Unknown error"}
       </div>
     );
