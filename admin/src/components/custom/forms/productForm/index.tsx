@@ -268,7 +268,7 @@ export function ProductForm() {
             )}
           />
         </div>
-        <div className="flex w-full flex-col space-x-0 md:flex-row md:space-x-10">
+        <div className="flex flex-col mt-10 max-w-vw">
           <TagInput
             hasError={tagCategoryError.categories}
             label="Categories"
