@@ -98,7 +98,7 @@ function ProductDetail({ params }: Props) {
     <div>
       <PageTitle title="Product details" />
 
-      <div className="container mt-20 flex space-x-20">
+      <div className="container mt-20 flex-col xl:flex-row flex space-x-0 xl:space-x-20">
         <div className="carousal">
           <Carousel setApi={setApi} className="w-[600px]">
             <CarouselContent>

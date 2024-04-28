@@ -26,6 +26,8 @@ import { useRouter } from "next/navigation";
 
 import { categories, tags } from "@/store/data.json";
 import TagInput from "@/components/ui/tags";
+import { Router } from "express";
+import { routes } from "@/types/routes";
 
 type FormSchemaType = z.infer<typeof addProductSchema>;
 
@@ -39,7 +41,7 @@ export function ProductForm() {
   });
   const { toast } = useToast();
 
-  // const router = useRouter();
+  const router = useRouter();
   // const pathname = usePathname();
 
   const form = useForm<FormSchemaType>({
@@ -66,6 +68,7 @@ export function ProductForm() {
         description: "New Product Added.",
         variant: "sucess",
       });
+      router.replace(routes.all_products);
     },
     onError: (error: any) => {
       console.log(error, "errors");

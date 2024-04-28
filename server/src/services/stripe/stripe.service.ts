@@ -7,10 +7,10 @@ const stripe = new Stripe(process.env.DEV_STRIPE_SECRECT || "", {
 });
 
 const CURRENCY = "usd";
-const DISCOUNT_AMOUNT_CENTS = 1000; // $10 discount represented in cents
+const DISCOUNT_AMOUNT_CENTS = 1000; // $10 discount in cents
 const SUCCESS_URL =
-  "http://localhost:4000/v1/orders/payment-success?session_id={CHECKOUT_SESSION_ID}";
-const CANCEL_URL = "http://localhost:4000/v1/orders/payment-cancelled";
+  "https://api.flower.box/v1/orders/payment-success?session_id={CHECKOUT_SESSION_ID}";
+const CANCEL_URL = "https://api.flower.box/v1/orders/payment-cancelled";
 
 class StripeService {
   static async createCheckoutSessionForOrder(
