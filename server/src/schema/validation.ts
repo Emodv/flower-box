@@ -18,7 +18,6 @@ export const productSchema = z.object({
     .regex(/^\d+(\.\d{1,2})?$/, "Invalid price format."),
   categories: z.string({ required_error: "Categories are required." }),
   tags: z.string({ required_error: "Tags are required." }),
-  existingAssetUrls: z.string(),
 });
 
 export const updateProductSchema = z.object({
