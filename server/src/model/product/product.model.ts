@@ -270,3 +270,62 @@ export async function getLimitedProductsByCategories(
     throw new Error("Failed to fetch limited products by categories");
   }
 }
+
+// UPADTE PRODUCT QUERIES.
+export async function deleteExistingAssets(
+  productId: number,
+  existingAssetUrls: string[],
+): Promise<void> {
+  const assetsToDelete = await prisma.asset.findMany({
+    where: {
+      url: { in: existingAssetUrls },
+      productId: productId,
+    },
+  });
+  await prisma.asset.deleteMany({
+    where: { id: { in: assetsToDelete.map((asset) => asset.id) } },
+  });
+}
+
+// Function to update product details
+export async function updateProductDetails(updateData: {
+  id: number;
+  name?: string;
+  description?: string;
+  price?: number;
+  categories?: Category[];
+  tags?: TagsEnum[];
+}): Promise<void> {
+  const data: any = {
+    ...(updateData.name && { name: updateData.name }),
+    ...(updateData.description && { description: updateData.description }),
+    ...(updateData.price && { price: updateData.price }),
+  };
+
+  if (updateData.categories) {
+    data.categories = {
+      connect: updateData.categories.map((category) => ({ id: category })),
+    };
+  }
+
+  if (updateData.tags) {
+    data.tags = { connect: updateData.tags.map((tag) => ({ id: tag })) };
+  }
+
+  await prisma.product.update({
+    where: { id: updateData.id },
+    data: data,
+  });
+}
+
+export async function createNewAssets(
+  productId: number,
+  assetUrls: string[],
+): Promise<void> {
+  await prisma.asset.createMany({
+    data: assetUrls.map((url) => ({
+      url: url,
+      productId: productId,
+    })),
+  });
+}
