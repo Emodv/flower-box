@@ -26,7 +26,6 @@ import { useRouter } from "next/navigation";
 
 import { categories, tags } from "@/store/data.json";
 import TagInput from "@/components/ui/tags";
-import { Router } from "express";
 import { routes } from "@/types/routes";
 
 type FormSchemaType = z.infer<typeof addProductSchema>;
