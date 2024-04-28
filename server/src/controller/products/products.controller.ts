@@ -5,7 +5,7 @@ import {
   ResponseMessages,
   ResponseStatus,
 } from "../../types/enums/responseEnums";
-import { uploadProductSchema } from "../../schema/validation";
+import { productSchema, updateProductSchema } from "../../schema/validation";
 import { Category, TagsEnum } from "@prisma/client";
 
 interface Product {
@@ -20,7 +20,7 @@ interface Product {
 
 export async function uploadProduct(request: Request, response: Response) {
   try {
-    const validatedData = uploadProductSchema.parse(request.body);
+    const validatedData = productSchema.parse(request.body);
 
     const {
       productName,
@@ -243,6 +243,72 @@ export async function getTopProducts(request: Request, response: Response) {
   } catch (error) {
     console.error("Error fetching top products by interactions:", error);
     return response
+      .status(ResponseStatus.InternalServerError)
+      .json({ message: ResponseMessages.InternalServerError });
+  }
+}
+
+export async function updateProduct(request: Request, response: Response) {
+  try {
+    const validatedData = updateProductSchema.parse(request.body);
+    const {
+      id,
+      productName,
+      description,
+      price,
+      categories: categoriesString,
+      tags: tagsString,
+      existingAssetUrls: existingAssetUrlsString,
+    } = validatedData;
+
+    const files: Express.Multer.File[] = request.files as Express.Multer.File[];
+
+    const tags = tagsString ? (tagsString.split("+") as TagsEnum[]) : undefined;
+    const categories = categoriesString
+      ? (categoriesString.split("+") as Category[])
+      : undefined;
+    const existingAssetUrls = existingAssetUrlsString
+      ? existingAssetUrlsString.split("+")
+      : undefined;
+
+    const userId = request.user?.userId;
+    if (!userId) {
+      return response
+        .status(ResponseStatus.BadRequest)
+        .json({ message: ResponseMessages.BadRequest });
+    }
+
+    if (existingAssetUrls && existingAssetUrls.length) {
+      await productModel.deleteExistingAssets(id, existingAssetUrls);
+      await S3Service.deleteImagesByNames(existingAssetUrls);
+    }
+
+    const uploadedFileNames =
+      files && files.length ? await S3Service.uploadImages(files, userId) : [];
+    const newAssetUrls = uploadedFileNames.map((fileName) => fileName);
+
+    if (newAssetUrls.length > 0) {
+      await productModel.createNewAssets(id, newAssetUrls);
+    }
+
+    const updateDetails = {
+      id,
+      ...(productName && { name: productName }),
+      ...(description && { description }),
+      ...(price && { price: parseFloat(price) }),
+      ...(categories && { categories }),
+      ...(tags && { tags }),
+    };
+
+    await productModel.updateProductDetails(updateDetails);
+
+    response.status(ResponseStatus.Created).json({
+      message: ResponseMessages.Created,
+      data: { id, productName, description, price, categories, tags },
+    });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    response
       .status(ResponseStatus.InternalServerError)
       .json({ message: ResponseMessages.InternalServerError });
   }

@@ -41,8 +41,8 @@ function ProductCards({
       <div className="relative h-80 overflow-hidden rounded-xl">
         <Image
           className="h-full"
-          // src={assets[0]}
-          src={"/placeholderProduct.jpg"}
+          src={assets[0]}
+        // src={"/placeholderProduct.jpg"}
           layout="fill"
           objectFit="cover"
           alt={`Image of ${name}`}
