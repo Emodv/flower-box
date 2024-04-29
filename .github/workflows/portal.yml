@@ -39,4 +39,4 @@ jobs:
           script: |
             export NEXT_PUBLIC_SERVER=https://api.flower.box/v1
             source ~/.nvm/nvm.sh
-            /home/***/.nvm/versions/node/v20.11.1/bin/pm2 restart portal --update-env
+            pm2 restart portal --update-env

@@ -86,4 +86,4 @@ jobs:
             export CLIENT_SERVER=https://admin.flower.box
             export CLIENT_SERVER_2=https://www.flower.box
             export COOKIE_CLIENT=.flower.box
-            /home/*/.nvm/versions/node/v20.11.1/bin/pm2 restart index --update-env
+            pm2 restart index --update-env
