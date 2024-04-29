@@ -65,7 +65,7 @@ export default function LoginAccount() {
           >
             <Card className="w-[350px] md:w-[400px]">
               <CardHeader className="space-y-1">
-                <CardTitle className="text-center text-2xl">Sign in.</CardTitle>
+                <CardTitle className="text-center text-2xl">Sign in</CardTitle>
                 <CardDescription className="text-center">
                   Enter your email and password to login
                 </CardDescription>

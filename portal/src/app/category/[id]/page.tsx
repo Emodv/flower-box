@@ -27,6 +27,7 @@ import {
 import useStore from "@/state/store";
 import useInteraction from "@/customHooks/useInteractions";
 import Slider from "react-slick";
+import ProductSkeleton from "@/components/custom/skeleton/ProductSkeleton";
 
 interface singleProduct {
   data: {
@@ -83,9 +84,9 @@ function Page({ params }: Props) {
     queryFn: () => productService.fetchProduct({ productId: params.id }),
   });
 
-  if (isLoading) return <div className="container">Loading...</div>;
+  if (true) return <div className="container"><ProductSkeleton/></div>;
   if (isError)
-    return <div className="container">Could not load Products....</div>;
+    return <div className="container">Could not load Products...</div>;
 
   const product = data?.data.data as ProductTypes.Product;
 

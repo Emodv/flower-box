@@ -230,6 +230,7 @@ function Page({}: Props) {
                         : "invalid promo code"
                       : ""}
                   </p>
+                  
                 </div>
                 {/* </form> */}
               </div>
