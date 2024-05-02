@@ -62,6 +62,7 @@ model Order {
   orderItems  OrderItem[]
   transaction Transaction?
   address     String
+  deliveryDate  DateTime @default(now())
 }
 
 model Interactions {

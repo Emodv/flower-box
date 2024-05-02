@@ -117,7 +117,7 @@ const PaginationTable = ({
                       placeholder="blur"
                       blurDataURL="/placeholderProduct.jpg"
                     />
-                  ) : col === "createdAt" || col === "updatedAt" ? (
+                  ) : col === "createdAt" || col === "updatedAt" || col === 'deliveryDate' ? (
                     // @ts-ignore
                     formatDate(product[col])
                   ) : (

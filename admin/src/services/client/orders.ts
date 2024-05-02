@@ -5,8 +5,7 @@ import { queryClient } from "@/lib/react-query-provider";
 import { CustomAxiosError } from "../api";
 import { orderType, transactionType } from "@/types/types";
 import { usePagination } from "@/hooks/usePagination";
-import { useEffect, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { statusOptions } from "@/types/order/orderType";
 import { statusOptionsT } from "@/types/transactions/transactionType";
 

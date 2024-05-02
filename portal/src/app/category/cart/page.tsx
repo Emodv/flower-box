@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import useStore, { cartQuantityUpdate } from "@/state/store";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Divide, Loader2, Minus, Plus, X } from "lucide-react";
+import { Loader2, Minus, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,12 +24,26 @@ import { useToast } from "@/components/ui/use-toast";
 import { CustomAxiosError } from "@/services/axiosApi";
 import { checkoutHandler } from "@/services/productService/productService";
 
+
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns"
+
+
 type Props = {};
 
 const signInFormSchema = z.object({
   address: z
     .string({ required_error: "Address is required." })
     .min(20, { message: "Write a more descriptive address" }),
+  dob: z.date({
+    required_error: "A delivery date is required.",
+  }),
 });
 
 function Page({}: Props) {
@@ -72,17 +86,13 @@ function Page({}: Props) {
     setFormLoading(true);
     mutation.mutate({
       address: values.address,
+      deliveryDate : values.dob.toISOString(),
       orderItems: cartItems.map((item) => {
         return { productId: item.productId, quantity: item.quantity };
       }),
       promo,
     });
   };
-
-  // const promoSubmit = async (e:React.FormEvent)=>{
-  //   e.preventDefault()
-  //   console.log(e.target["promo"].value,"ss")
-  // }
 
   if (cartItems.length < 1) {
     return (
@@ -106,13 +116,13 @@ function Page({}: Props) {
             <div
               key={item.productId}
               className={cn(
-                "flex flex-col sm:flex-row py-2 items-center justify-between border-t-2 border-gray-100 px-4",
+                "flex flex-col items-center justify-between border-t-2 border-gray-100 px-4 py-2 sm:flex-row",
                 {
                   "border-b-2": index + 1 === cartItems.length,
                 },
               )}
             >
-              <div className="flex items-center space-x-3 w-full">
+              <div className="flex w-full items-center space-x-3">
                 <Image
                   src={item.img}
                   width={50}
@@ -123,7 +133,7 @@ function Page({}: Props) {
                   {item.name}
                 </h4>
               </div>
-              <div className="flex items-center w-full justify-between mt-4">
+              <div className="mt-4 flex w-full items-center justify-between">
                 <div className="flex items-center justify-center">
                   <Button
                     variant="ghost"
@@ -167,7 +177,7 @@ function Page({}: Props) {
         })}
         <div>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} id="checkoutForm">
+            <form onSubmit={form.handleSubmit(onSubmit)} id="checkoutForm" className="space-y-8 mt-10">
               <FormField
                 control={form.control}
                 name="address"
@@ -184,6 +194,47 @@ function Page({}: Props) {
                       />
                     </FormControl>
                     <FormMessage className="mt-2" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel className="text-lg font-normal text-black" >Pick A Delivery Date.</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a delivery date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="end">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date <= new Date()
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -230,7 +281,6 @@ function Page({}: Props) {
                         : "invalid promo code"
                       : ""}
                   </p>
-                  
                 </div>
                 {/* </form> */}
               </div>

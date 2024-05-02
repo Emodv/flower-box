@@ -4,4 +4,5 @@ export enum orderEnum {
   createdAt = "createdAt",
   updatedAt = "updatedAt",
   address = "address",
+  deliveryDate = "deliveryDate"
 }

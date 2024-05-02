@@ -17,6 +17,7 @@ const columns = [
   orderEnum.orderEnum.createdAt,
   orderEnum.orderEnum.updatedAt,
   orderEnum.orderEnum.address,
+  orderEnum.orderEnum.deliveryDate,
 ];
 
 export default function OrdersPage() {

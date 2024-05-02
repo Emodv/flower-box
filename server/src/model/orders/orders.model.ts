@@ -88,15 +88,18 @@ export async function completeOrder({
 async function createOrder({
   address,
   orderItems,
+  deliveryDate,
 }: {
   address: string;
   orderItems: Array<{ productId: number; quantity: number }>;
+  deliveryDate: string;
 }): Promise<newOrderI | null> {
   try {
     const orderWithDetails = await prisma.order.create({
       data: {
         address,
         status: OrderStatus.PENDING,
+        deliveryDate,
         transaction: {
           create: {
             amount: 0,
