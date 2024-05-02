@@ -118,11 +118,13 @@ export function getTopProducts() {
 }
 
 export const checkoutHandler = async (payload: {
-  address: string, orderItems: {
+  address: string;
+  orderItems: {
     quantity: number;
     productId: number;
-  }[],
-  promo:string
+  }[];
+  promo: string;
+  deliveryDate: string;
 }) => {
   return Instance.post("/orders/create-order", payload);
 };

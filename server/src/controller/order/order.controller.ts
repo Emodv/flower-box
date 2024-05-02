@@ -71,7 +71,7 @@ export async function setOrderToCompleted(
 
 async function createOrderController(request: Request, response: Response) {
   try {
-    const { address, orderItems, promo: coupon } = request.body;
+    const { address, orderItems, promo: coupon, deliveryDate } = request.body;
 
     console.log({ address, orderItems }, "payload");
 
@@ -81,7 +81,11 @@ async function createOrderController(request: Request, response: Response) {
       });
     }
 
-    const newOrder = await ordersModel.createOrder({ address, orderItems });
+    const newOrder = await ordersModel.createOrder({
+      address,
+      orderItems,
+      deliveryDate,
+    });
 
     if (!newOrder || !newOrder.id) {
       throw new Error("Order creation failed or missing order ID.");

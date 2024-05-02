@@ -28,6 +28,8 @@ import useStore from "@/state/store";
 import useInteraction from "@/customHooks/useInteractions";
 import Slider from "react-slick";
 import ProductSkeleton from "@/components/custom/skeleton/ProductSkeleton";
+import { Router } from "express";
+import { useRouter } from "next/navigation";
 
 interface singleProduct {
   data: {
@@ -84,7 +86,14 @@ function Page({ params }: Props) {
     queryFn: () => productService.fetchProduct({ productId: params.id }),
   });
 
-  if (true) return <div className="container"><ProductSkeleton/></div>;
+  const router = useRouter();
+
+  if (isLoading)
+    return (
+      <div className="container">
+        <ProductSkeleton />
+      </div>
+    );
   if (isError)
     return <div className="container">Could not load Products...</div>;
 
@@ -212,7 +221,7 @@ function Page({ params }: Props) {
             </div>
           </div>
         </div>
-        <div className="flex-1 pb-4 md:px-10 md:pb-0">
+        <div className="flex flex-1 gap-2 pb-4 md:px-10 md:pb-0">
           <Button
             onClick={() =>
               setCartItem({
@@ -228,6 +237,23 @@ function Page({ params }: Props) {
           >
             <ShoppingCart className="mr-2" />
             Add to Cart.
+          </Button>
+          <Button
+            onClick={() => {
+              setCartItem({
+                productId: product?.id,
+                price: product?.price,
+                img: product?.assets[0],
+                name: product?.name,
+                quantity: 0,
+              });
+              router.push("/category/cart");
+            }}
+            variant="outline"
+            className="w-full py-6 hover:bg-primary-hover"
+          >
+            <ShoppingCart className="mr-2" />
+            Purchase this Product.
           </Button>
         </div>
       </div>

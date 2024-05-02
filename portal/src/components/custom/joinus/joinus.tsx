@@ -31,10 +31,11 @@ function JoinUs({}: Props) {
           </div>
         </div>
         <Image
-          src="/section.png"
+          src="/section2.png"
           layout="fill"
           objectFit="cover"
           objectPosition="top"
+          className="brightness-75"
           alt={`Image of flowerbox join us section`}
           loading="lazy"
         />

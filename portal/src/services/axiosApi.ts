@@ -3,8 +3,8 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 
 // intances
 const instance = axios.create({
-  // baseURL: process.env.NEXT_PUBLIC_SERVER,
-  baseURL: "https://api.flower.box/v1",
+  baseURL: process.env.NEXT_PUBLIC_SERVER,
+  // baseURL: "https://api.flower.box/v1",
   withCredentials: true,
 });
 
