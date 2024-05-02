@@ -28,7 +28,6 @@ import useStore from "@/state/store";
 import useInteraction from "@/customHooks/useInteractions";
 import Slider from "react-slick";
 import ProductSkeleton from "@/components/custom/skeleton/ProductSkeleton";
-import { Router } from "express";
 import { useRouter } from "next/navigation";
 
 interface singleProduct {
