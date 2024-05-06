@@ -10,7 +10,7 @@ function Header({}: Props) {
     <div className="my-14 bg-[#F3F3F3]  pt-10">
       <div className="container flex  flex-col md:flex-row">
         <div className="text flex-1 pt-8">
-          <h2 className={cn(playfair.className, "text-[60px] leading-[70px]")}>
+          <h2 className={cn(playfair.className, "text-4xl md:text-[60px] md:leading-[70px]")}>
             Send <span className="text-[#FFB6C1]">flowers</span> like <br />
             you mean it.
           </h2>
