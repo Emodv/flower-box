@@ -5,6 +5,7 @@ import * as productService from "@/services/productService/productService";
 import { ProductTypes } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import {
+  ArrowBigRight,
   Boxes,
   CircleDollarSign,
   QrCode,
@@ -94,7 +95,7 @@ function Page({ params }: Props) {
       </div>
     );
   if (isError)
-    return <div className="container">Could not load Products...</div>;
+    return <div className="container">Could not load Product...</div>;
 
   const product = data?.data.data as ProductTypes.Product;
 
@@ -192,7 +193,7 @@ function Page({ params }: Props) {
           <div className="flex items-center space-x-10 py-4">
             <QrCode />
             <p className="flex flex-col">
-              <span className="text-lg">PDHD939D99</span>
+              <span className="text-lg">{product.productId}</span>
               <span className="text-sm text-subtle">Product ID.</span>
             </p>
           </div>
@@ -251,8 +252,9 @@ function Page({ params }: Props) {
             variant="outline"
             className="w-full py-6 hover:bg-primary-hover"
           >
-            <ShoppingCart className="mr-2" />
-            Purchase this Product.
+                        <ArrowBigRight className="mr-2"/>
+            <span className="md:hidden">Purchase</span>
+            <span className="hidden md:block">Purchase this Product</span>
           </Button>
         </div>
       </div>
