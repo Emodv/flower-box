@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 // intances
 const instance = axios.create({
   // baseURL: process.env.NEXT_PUBLIC_SERVER,
-  baseURL: "https://api.flower.box/v1",
+  baseURL: "http://localhost:4000/v1",
   withCredentials: true,
 });
 
