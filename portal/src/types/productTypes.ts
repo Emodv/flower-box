@@ -8,7 +8,7 @@ export type Product = {
   tags?: TagsEnum[];
   categories: Category[];
   assets: string[];
-  productId : string;
+  productId?: string;
 };
 
 export enum Category {
