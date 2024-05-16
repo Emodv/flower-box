@@ -165,11 +165,10 @@ function Page({}: Props) {
                 </div>
                 <div className="w-10">${item.price * item.quantity}</div>
                 <Button
-                  variant="ghost"
-                  className="text-subtle"
+                  className="text-subtle p-0 h-6 w-6 rounded-full"
                   onClick={() => removeCartItem(item.productId)}
                 >
-                  <X size={16} />
+                  <X size={16} color="#fff"/>
                 </Button>
               </div>
             </div>
