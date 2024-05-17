@@ -17,7 +17,7 @@ function MainFooter({}: Props) {
     <div className="bg-gray-100 py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 text-sm sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-          <div className="col-span-1 space-y-4 lg:col-span-1">
+          <div className="col-span-1 hidden space-y-4 md:block lg:col-span-1">
             <h1 className="pb-3">MY ACCOUNT</h1>
             <p className="text-gray-500">My account</p>
             <p className="text-gray-500">Checkout</p>
@@ -26,7 +26,7 @@ function MainFooter({}: Props) {
             <p className="text-gray-500">Wishlist</p>
             <p className="text-gray-500">About us</p>
           </div>
-          <div className="col-span-1 space-y-4 lg:col-span-1">
+          <div className=" col-span-1 hidden space-y-4 md:block lg:col-span-1">
             <h1 className="pb-3">QUICK LINKS</h1>
             <p className="text-gray-500">Store Location</p>
             <p className="text-gray-500">Orders Tracking</p>
@@ -35,7 +35,7 @@ function MainFooter({}: Props) {
             <p className="text-gray-500">FAQs</p>
             <p className="text-gray-500">Service</p>
           </div>
-          <div className="col-span-1 space-y-4 lg:col-span-1">
+          <div className="   col-span-1 space-y-4 lg:col-span-1">
             <h1 className="pb-3">INFORMATION</h1>
             <p className="text-gray-500">Privacy Page</p>
             <p className="text-gray-500">About us</p>
@@ -53,7 +53,7 @@ function MainFooter({}: Props) {
             <p className="text-gray-500">Wishlist</p>
             <p className="text-gray-500">Terms & Conditions</p>
           </div>
-          <div className="col-span-1 space-y-4 lg:col-span-1">
+          <div className=" hidden md:block col-span-1 space-y-4 lg:col-span-1">
             <h1 className="pb-3">ABOUT OUR STORE</h1>
             <p className="text-gray-500">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
