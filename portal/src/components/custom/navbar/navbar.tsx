@@ -36,7 +36,12 @@ function Navbar({}: Props) {
         <div className="logo">
           <Link href="/" className="logo flex items-center gap-2 text-primary">
             <Flower size={36}></Flower>
-            <h1 className={cn(playfair.className, "text-2xl tracking-widest")}>
+            <h1
+              className={cn(
+                playfair.className,
+                "tracking-widest sm:text-lg md:text-2xl ",
+              )}
+            >
               FlowerBox
             </h1>
           </Link>
@@ -59,7 +64,7 @@ function Navbar({}: Props) {
           href="/category"
           className={cn(
             playfair.className,
-            "rounded-lg bg-primary-subtle px-6 py-4 text-base text-white",
+            "rounded-lg bg-primary-subtle px-6 py-4 text-white sm:text-sm md:text-base",
           )}
         >
           Get Started
